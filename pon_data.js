@@ -1,0 +1,1594 @@
+// Base de dados de PONs e CTOs extraída da planilha 'Controle CTO e PON - 2026'
+// Atualizado em: 24/09/2026 por Valdeir
+const INITIAL_PON_DATA = [
+  {
+    "placa_pon": "1-1",
+    "placa": 1,
+    "pon": 1,
+    "clientes_atuais": 128,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 0,
+    "status": "Lotada",
+    "status_tipo": "danger",
+    "ctos": [
+      "CTO-AMARELA-01",
+      "CTO-AMARELA-02",
+      "CTO-AMARELA-03",
+      "CTO-AMARELA-04",
+      "CTO-AMARELA-05",
+      "CTO-AMARELA-06",
+      "CTO-AMARELA-07",
+      "CTO-AMARELA-08"
+    ]
+  },
+  {
+    "placa_pon": "1-2",
+    "placa": 1,
+    "pon": 2,
+    "clientes_atuais": 86,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 42,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BALBO",
+      "CTO-BARAO",
+      "CTO-ITALIA",
+      "CTO-JOSE-LIMA",
+      "CTO-LAURINDO",
+      "CTO-PILCHE",
+      "CTO-TIRADENTES",
+      "CTO-VACACAI"
+    ]
+  },
+  {
+    "placa_pon": "1-4",
+    "placa": 1,
+    "pon": 4,
+    "clientes_atuais": 87,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 41,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BRENNER",
+      "CTO-CDL",
+      "CTO-CIVIL",
+      "CTO-MENNA",
+      "CTO-QUERO-QUERO",
+      "CTO-URCAMP-3"
+    ]
+  },
+  {
+    "placa_pon": "1-5",
+    "placa": 1,
+    "pon": 5,
+    "clientes_atuais": 110,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 18,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-FALCON",
+      "CTO-HOMERO",
+      "CTO-LC-CHAVEIRO",
+      "CTO-OBREIROS",
+      "CTO-TAMOYO",
+      "CTO-VIVENDA-B-01",
+      "CTO-VIVENDA-B-02",
+      "CTO-VIVENDA-B-03",
+      "CTO-VIVENDA-B-04"
+    ]
+  },
+  {
+    "placa_pon": "1-6",
+    "placa": 1,
+    "pon": 6,
+    "clientes_atuais": 61,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 67,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BARRANCO-01",
+      "CTO-BARRANCO-02",
+      "CTO-BARRANCO-04",
+      "CTO-BARRANCO-05",
+      "CTO-BARRANCO-07"
+    ]
+  },
+  {
+    "placa_pon": "1-7",
+    "placa": 1,
+    "pon": 7,
+    "clientes_atuais": 110,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 18,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-ANDRADE-01",
+      "CTO-ANDRADE-02",
+      "CTO-ANDRADE-03",
+      "CTO-ANDRADE-04",
+      "CTO-ANDRADE-05",
+      "CTO-ANDRADE-06",
+      "CTO-ANDRADE-07",
+      "CTO-ANDRADE-08",
+      "CTO-ANDRADE-09",
+      "CTO-ANDRADE-10",
+      "CTO-ANDRADE-11",
+      "CTO-ANDRADE-12",
+      "CTO-ANDRADE-13"
+    ]
+  },
+  {
+    "placa_pon": "2-1",
+    "placa": 2,
+    "pon": 1,
+    "clientes_atuais": 96,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 32,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CHB-01",
+      "CTO-CHB-02",
+      "CTO-CHB-03",
+      "CTO-CHB-04",
+      "CTO-CHB-05",
+      "CTO-CHB-06",
+      "CTO-CHB-07",
+      "CTO-CHB-08"
+    ]
+  },
+  {
+    "placa_pon": "2-2",
+    "placa": 2,
+    "pon": 2,
+    "clientes_atuais": 102,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 26,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CAMARA",
+      "CTO-CPT",
+      "CTO-ENGENHO",
+      "CTO-JAM",
+      "CTO-RECEITA",
+      "CTO-TIARAJU",
+      "CTO-WIZARD"
+    ]
+  },
+  {
+    "placa_pon": "2-3",
+    "placa": 2,
+    "pon": 3,
+    "clientes_atuais": 125,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 3,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-BRAUSER",
+      "CTO-LAVAPE-01",
+      "CTO-PASCOTINI-01",
+      "CTO-PASCOTINI-02",
+      "CTO-SEPE-01",
+      "CTO-SEPE-02",
+      "CTO-SEPE-03",
+      "CTO-SEPE-04"
+    ]
+  },
+  {
+    "placa_pon": "2-4",
+    "placa": 2,
+    "pon": 4,
+    "clientes_atuais": 127,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 1,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-STO-01",
+      "CTO-STO-02",
+      "CTO-STO-03",
+      "CTO-STO-04",
+      "CTO-STO-05",
+      "CTO-STO-06",
+      "CTO-STO-07",
+      "CTO-STO-08",
+      "CTO-STO-09",
+      "CTO-STO-10",
+      "CTO-STO-11",
+      "CTO-STO-12",
+      "CTO-STO-13",
+      "CTO-STO-14",
+      "CTO-STO-15",
+      "CTO-STO-16"
+    ]
+  },
+  {
+    "placa_pon": "2-5",
+    "placa": 2,
+    "pon": 5,
+    "clientes_atuais": 122,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 6,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-3DO-01",
+      "CTO-3DO-02",
+      "CTO-3DO-03",
+      "CTO-3DO-04",
+      "CTO-3DO-05",
+      "CTO-3DO-06",
+      "CTO-3DO-07",
+      "CTO-3DO-08"
+    ]
+  },
+  {
+    "placa_pon": "2-6",
+    "placa": 2,
+    "pon": 6,
+    "clientes_atuais": 74,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 54,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-AABB-01",
+      "CTO-AABB-02",
+      "CTO-AABB-03",
+      "CTO-AABB-04",
+      "CTO-BANCARIOS-01",
+      "CTO-BANCARIOS-02",
+      "CTO-MARECHAL",
+      "CTO-QUERENCIA"
+    ]
+  },
+  {
+    "placa_pon": "2-7",
+    "placa": 2,
+    "pon": 7,
+    "clientes_atuais": 98,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 30,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CERRO-01",
+      "CTO-CERRO-02",
+      "CTO-CERRO-03",
+      "CTO-CERRO-04",
+      "CTO-CERRO-05",
+      "CTO-CERRO-06",
+      "CTO-CERRO-07",
+      "CTO-CERRO-08"
+    ]
+  },
+  {
+    "placa_pon": "2-8",
+    "placa": 2,
+    "pon": 8,
+    "clientes_atuais": 76,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 52,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CAMBAIZINHO",
+      "CTO-CATUCABA-01",
+      "CTO-CATUCABA-02",
+      "CTO-CATUCABA-03",
+      "CTO-CATUCABA-04",
+      "CTO-CATUCABA-05",
+      "CTO-CGR"
+    ]
+  },
+  {
+    "placa_pon": "3-1",
+    "placa": 3,
+    "pon": 1,
+    "clientes_atuais": 124,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 4,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-BGD-01",
+      "CTO-BGD-02",
+      "CTO-BGD-03",
+      "CTO-BGD-04",
+      "CTO-BGD-05",
+      "CTO-BGD-06",
+      "CTO-BGD-07",
+      "CTO-BGD-08",
+      "CTO-BGD-09",
+      "CTO-BGD-10",
+      "CTO-BGD-11",
+      "CTO-BGD-12",
+      "CTO-BGD-13"
+    ]
+  },
+  {
+    "placa_pon": "3-2",
+    "placa": 3,
+    "pon": 2,
+    "clientes_atuais": 125,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 3,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-SCM-01",
+      "CTO-SCM-02",
+      "CTO-SCM-03",
+      "CTO-SCM-04",
+      "CTO-SCM-05",
+      "CTO-SCM-06",
+      "CTO-SCM-07",
+      "CTO-SCM-08"
+    ]
+  },
+  {
+    "placa_pon": "3-3",
+    "placa": 3,
+    "pon": 3,
+    "clientes_atuais": 126,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 2,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-SCM-09",
+      "CTO-SCM-10",
+      "CTO-SCM-11",
+      "CTO-SCM-12",
+      "CTO-SCM-13",
+      "CTO-SCM-13B",
+      "CTO-SCM-14",
+      "CTO-SCM-15",
+      "CTO-SCM-16"
+    ]
+  },
+  {
+    "placa_pon": "3-4",
+    "placa": 3,
+    "pon": 4,
+    "clientes_atuais": 123,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 5,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-CEN-C-01",
+      "CTO-CEN-C-02",
+      "CTO-CEN-C-03",
+      "CTO-CEN-C-04",
+      "CTO-CEN-C-05",
+      "CTO-CEN-C-06",
+      "CTO-CEN-C-07",
+      "CTO-CEN-D-01",
+      "CTO-CEN-D-02",
+      "CTO-CEN-D-03",
+      "CTO-CEN-D-04",
+      "CTO-CEN-D-05",
+      "CTO-CEN-D-06"
+    ]
+  },
+  {
+    "placa_pon": "3-5",
+    "placa": 3,
+    "pon": 5,
+    "clientes_atuais": 48,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 80,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CAMITA-01",
+      "CTO-CAMITA-02",
+      "CTO-CAMITA-03",
+      "CTO-CAMITA-04",
+      "CTO-CAMITA-05",
+      "CTO-CAMITA-06",
+      "CTO-CAMITA-07"
+    ]
+  },
+  {
+    "placa_pon": "3-6",
+    "placa": 3,
+    "pon": 6,
+    "clientes_atuais": 118,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 10,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-VERDE-G-01",
+      "CTO-VERDE-G-02",
+      "CTO-VERDE-G-03",
+      "CTO-VERDE-G-04",
+      "CTO-VERDE-G-05",
+      "CTO-VERDE-G-06",
+      "CTO-VERDE-G-07",
+      "CTO-VERDE-G-08"
+    ]
+  },
+  {
+    "placa_pon": "3-7",
+    "placa": 3,
+    "pon": 7,
+    "clientes_atuais": 115,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 13,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BT-01",
+      "CTO-BT-02",
+      "CTO-BT-03",
+      "CTO-BT-04",
+      "CTO-BT-05",
+      "CTO-BT-06",
+      "CTO-BT-07"
+    ]
+  },
+  {
+    "placa_pon": "3-8",
+    "placa": 3,
+    "pon": 8,
+    "clientes_atuais": 83,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 45,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-JARDIM-H-01",
+      "CTO-JARDIM-H-02",
+      "CTO-JARDIM-H-03",
+      "CTO-JARDIM-H-04",
+      "CTO-JARDIM-H-05",
+      "CTO-JARDIM-H-06",
+      "CTO-RGE-SUL"
+    ]
+  },
+  {
+    "placa_pon": "4-1",
+    "placa": 4,
+    "pon": 1,
+    "clientes_atuais": 124,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 4,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-VERDE-01",
+      "CTO-VERDE-02",
+      "CTO-VERDE-03",
+      "CTO-VERDE-04",
+      "CTO-VERDE-05",
+      "CTO-VERDE-06",
+      "CTO-VERDE-07",
+      "CTO-VERDE-08"
+    ]
+  },
+  {
+    "placa_pon": "4-2",
+    "placa": 4,
+    "pon": 2,
+    "clientes_atuais": 117,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 11,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BRANCA-01",
+      "CTO-BRANCA-02",
+      "CTO-BRANCA-03",
+      "CTO-BRANCA-04",
+      "CTO-BRANCA-05",
+      "CTO-BRANCA-06",
+      "CTO-BRANCA-07",
+      "CTO-BRANCA-08"
+    ]
+  },
+  {
+    "placa_pon": "4-3",
+    "placa": 4,
+    "pon": 3,
+    "clientes_atuais": 94,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 34,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BRASIL-01",
+      "CTO-BRASIL-02",
+      "CTO-BRASIL-03",
+      "CTO-BRASIL-04",
+      "CTO-BRASIL-05",
+      "CTO-BRASIL-06",
+      "CTO-BRASIL-07",
+      "CTO-BRASIL-08"
+    ]
+  },
+  {
+    "placa_pon": "4-4",
+    "placa": 4,
+    "pon": 4,
+    "clientes_atuais": 85,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 43,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CN-16",
+      "CTO-CN-18",
+      "CTO-CN-19",
+      "CTO-CN-20",
+      "CTO-CN-21",
+      "CTO-CN-22"
+    ]
+  },
+  {
+    "placa_pon": "4-5",
+    "placa": 4,
+    "pon": 5,
+    "clientes_atuais": 112,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 16,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BF-01",
+      "CTO-BF-02",
+      "CTO-BF-03",
+      "CTO-BF-04",
+      "CTO-BF-05",
+      "CTO-BF-06",
+      "CTO-BF-07"
+    ]
+  },
+  {
+    "placa_pon": "4-6",
+    "placa": 4,
+    "pon": 6,
+    "clientes_atuais": 82,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 46,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-JB-B-15",
+      "CTO-JB-B-16",
+      "CTO-JB-B-17",
+      "CTO-JB-B-18",
+      "CTO-JB-B-19",
+      "CTO-JB-B-20",
+      "CTO-JB-B-21",
+      "CTO-JB-B-22",
+      "CTO-JB-B-23",
+      "CTO-JB-B-24",
+      "CTO-JB-B-25",
+      "CTO-JB-B-26",
+      "CTO-JB-B-27",
+      "CTO-JB-B-28"
+    ]
+  },
+  {
+    "placa_pon": "4-7",
+    "placa": 4,
+    "pon": 7,
+    "clientes_atuais": 128,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 0,
+    "status": "Lotada",
+    "status_tipo": "danger",
+    "ctos": [
+      "CTO-GBI",
+      "CTO-ISIDRO",
+      "CTO-MARROM-01",
+      "CTO-MARROM-02",
+      "CTO-MARROM-03",
+      "CTO-MARROM-04",
+      "CTO-MARROM-05",
+      "CTO-PARADOURO",
+      "CTO-TREVO-01",
+      "CTO-TREVO-02",
+      "CTO-TREVO-03",
+      "CTO-TREVO-04",
+      "CTO-TREVO-05",
+      "CTO-TREVO-06",
+      "CTO-TREVO-07",
+      "CTO-TREVO-08",
+      "CTO-VALTRA"
+    ]
+  },
+  {
+    "placa_pon": "4-8",
+    "placa": 4,
+    "pon": 8,
+    "clientes_atuais": 107,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 21,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CORREDOR-MS-03",
+      "CTO-DACIO-01",
+      "CTO-DACIO-02",
+      "CTO-DACIO-03",
+      "CTO-DACIO-04",
+      "CTO-DACIO-05",
+      "CTO-DACIO-06",
+      "CTO-DACIO-07",
+      "CTO-DACIO-08",
+      "CTO-FAIXA-01",
+      "CTO-FAIXA-02",
+      "CTO-SAO-PEDRO-04"
+    ]
+  },
+  {
+    "placa_pon": "6-1",
+    "placa": 6,
+    "pon": 1,
+    "clientes_atuais": 67,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 61,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-PRIMAVERA-A-01",
+      "CTO-PRIMAVERA-A-02",
+      "CTO-PRIMAVERA-A-03",
+      "CTO-PRIMAVERA-A-04",
+      "CTO-PRIMAVERA-A-05",
+      "CTO-PRIMAVERA-A-06",
+      "CTO-PRIMAVERA-A-07"
+    ]
+  },
+  {
+    "placa_pon": "6-2",
+    "placa": 6,
+    "pon": 2,
+    "clientes_atuais": 121,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 7,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-ADAO",
+      "CTO-BANANAS",
+      "CTO-BISCOITAO",
+      "CTO-CLARESTINO",
+      "CTO-COSTELAO",
+      "CTO-NORBERTO",
+      "CTO-PDL",
+      "CTO-PROPICIO",
+      "CTO-S-ANDRE"
+    ]
+  },
+  {
+    "placa_pon": "6-3",
+    "placa": 6,
+    "pon": 3,
+    "clientes_atuais": 100,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 28,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-FRENTE-BIG",
+      "CTO-FRENTE-NOVO",
+      "CTO-SQN-NONO",
+      "CTO-GAUCHA",
+      "CTO-POLI",
+      "CTO-CAMBAY",
+      "CTO-SODRE",
+      "CTO-SALSO-01",
+      "CTO-SALSO-02",
+      "CTO-MURO-NONO",
+      "CTO-F.HERMENGILDO-01",
+      "CTO-F.HERMENGILDO-02"
+    ]
+  },
+  {
+    "placa_pon": "6-4",
+    "placa": 6,
+    "pon": 4,
+    "clientes_atuais": 44,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 84,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-PRIMAVERA-B-01",
+      "CTO-PRIMAVERA-B-02",
+      "CTO-PRIMAVERA-B-03",
+      "CTO-PRIMAVERA-B-04",
+      "CTO-PRIMAVERA-B-05",
+      "CTO-PRIMAVERA-B-06"
+    ]
+  },
+  {
+    "placa_pon": "6-5",
+    "placa": 6,
+    "pon": 5,
+    "clientes_atuais": 126,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 2,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-CACAIO",
+      "CTO-DEOCLECIANO",
+      "CTO-FER-COR",
+      "CTO-MANCIO",
+      "CTO-SANGA-CAP",
+      "CTO-SAO-LUIZ",
+      "CTO-VARA-TRABALHO",
+      "CTO-VISOTO"
+    ]
+  },
+  {
+    "placa_pon": "6-6",
+    "placa": 6,
+    "pon": 6,
+    "clientes_atuais": 87,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 41,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-COHAB-B-01",
+      "CTO-COHAB-B-02",
+      "CTO-COHAB-B-03",
+      "CTO-COHAB-B-04",
+      "CTO-COHAB-B-05",
+      "CTO-COHAB-B-06",
+      "CTO-COHAB-B-07",
+      "CTO-COHAB-B-08"
+    ]
+  },
+  {
+    "placa_pon": "6-7",
+    "placa": 6,
+    "pon": 7,
+    "clientes_atuais": 67,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 61,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BECKER",
+      "CTO-BENGALA",
+      "CTO-CAIXERAL",
+      "CTO-PREFEITURA",
+      "CTO-WOLMER"
+    ]
+  },
+  {
+    "placa_pon": "6-8",
+    "placa": 6,
+    "pon": 8,
+    "clientes_atuais": 70,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 58,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CASA-FRANGO",
+      "CTO-M.CARDOSO",
+      "CTO-ONESIMO-01",
+      "CTO-ONESIMO-02",
+      "CTO-ONESIMO-03",
+      "CTO-RALLY",
+      "CTO-SINHA",
+      "CTO-TIBA"
+    ]
+  },
+  {
+    "placa_pon": "8-1",
+    "placa": 8,
+    "pon": 1,
+    "clientes_atuais": 97,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 31,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CN-01",
+      "CTO-CN-02",
+      "CTO-CN-03",
+      "CTO-CN-04",
+      "CTO-CN-05",
+      "CTO-CN-06",
+      "CTO-CN-07"
+    ]
+  },
+  {
+    "placa_pon": "8-2",
+    "placa": 8,
+    "pon": 2,
+    "clientes_atuais": 99,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 29,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BARRACAO",
+      "CTO-BORIN",
+      "CTO-CHAMPAGNAT",
+      "CTO-FERNANDO-ABBOTT",
+      "CTO-GINASIO",
+      "CTO-MALLET-MARQUES",
+      "CTO-SEVEN",
+      "CTO-SHOPPING"
+    ]
+  },
+  {
+    "placa_pon": "8-3",
+    "placa": 8,
+    "pon": 3,
+    "clientes_atuais": 98,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 30,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-ESP-01",
+      "CTO-ESP-02",
+      "CTO-ESP-12",
+      "CTO-PEL-01",
+      "CTO-PEL-02",
+      "CTO-PEL-03",
+      "CTO-PEL-04",
+      "CTO-PEL-05"
+    ]
+  },
+  {
+    "placa_pon": "8-4",
+    "placa": 8,
+    "pon": 4,
+    "clientes_atuais": 100,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 28,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CN-34",
+      "CTO-CN-35",
+      "CTO-CN-37",
+      "CTO-CN-38",
+      "CTO-CN-39",
+      "CTO-CN-40",
+      "CTO-SEBASTIAO-01",
+      "CTO-SEBASTIAO-02"
+    ]
+  },
+  {
+    "placa_pon": "8-5",
+    "placa": 8,
+    "pon": 5,
+    "clientes_atuais": 84,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 44,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CN-25",
+      "CTO-CN-26",
+      "CTO-CN-27",
+      "CTO-CN-31",
+      "CTO-CN-32"
+    ]
+  },
+  {
+    "placa_pon": "8-6",
+    "placa": 8,
+    "pon": 6,
+    "clientes_atuais": 68,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 60,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CARLOS-MOREIRA",
+      "CTO-VIVENDA-A-01",
+      "CTO-VIVENDA-A-02",
+      "CTO-VIVENDA-A-03",
+      "CTO-VIVENDA-A-04"
+    ]
+  },
+  {
+    "placa_pon": "8-7",
+    "placa": 8,
+    "pon": 7,
+    "clientes_atuais": 125,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 3,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-BRANDAO",
+      "CTO-BV-01",
+      "CTO-BV-02",
+      "CTO-BV-03",
+      "CTO-BV-04",
+      "CTO-BV-05",
+      "CTO-BV-06",
+      "CTO-BV-07",
+      "CTO-BV-08",
+      "CTO-BV-09",
+      "CTO-BV-10",
+      "CTO-BV-11",
+      "CTO-FRUTARE",
+      "CTO-V9/RCB"
+    ]
+  },
+  {
+    "placa_pon": "8-8",
+    "placa": 8,
+    "pon": 8,
+    "clientes_atuais": 106,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 22,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-P.VARGAS-01",
+      "CTO-P.VARGAS-02",
+      "CTO-P.VARGAS-03",
+      "CTO-P.VARGAS-04",
+      "CTO-P.VARGAS-05",
+      "CTO-P.VARGAS-06",
+      "CTO-P.VARGAS-07",
+      "CTO-PARQUE"
+    ]
+  },
+  {
+    "placa_pon": "8-9",
+    "placa": 8,
+    "pon": 9,
+    "clientes_atuais": 31,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 97,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-RES-MEC-01",
+      "CTO-RES-MEC-02",
+      "CTO-RES-MEC-03",
+      "CTO-RES-MEC-04"
+    ]
+  },
+  {
+    "placa_pon": "8-10",
+    "placa": 8,
+    "pon": 10,
+    "clientes_atuais": 109,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 19,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BRANCA-09",
+      "CTO-BRANCA-10",
+      "CTO-BRANCA-11",
+      "CTO-BRANCA-12",
+      "CTO-BRANCA-13",
+      "CTO-BRANCA-14",
+      "CTO-BRANCA-15",
+      "CTO-BRANCA-16"
+    ]
+  },
+  {
+    "placa_pon": "8-11",
+    "placa": 8,
+    "pon": 11,
+    "clientes_atuais": 120,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 8,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-VERDE-09",
+      "CTO-VERDE-10",
+      "CTO-VERDE-11",
+      "CTO-VERDE-12",
+      "CTO-VERDE-13",
+      "CTO-VERDE-14",
+      "CTO-VERDE-15",
+      "CTO-VERDE-16"
+    ]
+  },
+  {
+    "placa_pon": "8-12",
+    "placa": 8,
+    "pon": 12,
+    "clientes_atuais": 117,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 11,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-VERDE-G-09",
+      "CTO-VERDE-G-10",
+      "CTO-VERDE-G-11",
+      "CTO-VERDE-G-12",
+      "CTO-VERDE-G-13",
+      "CTO-VERDE-G-14",
+      "CTO-VERDE-G-15",
+      "CTO-VERDE-G-16"
+    ]
+  },
+  {
+    "placa_pon": "8-13",
+    "placa": 8,
+    "pon": 13,
+    "clientes_atuais": 127,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 1,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-AMARELA-09",
+      "CTO-AMARELA-10",
+      "CTO-AMARELA-11",
+      "CTO-AMARELA-12",
+      "CTO-AMARELA-13",
+      "CTO-AMARELA-14",
+      "CTO-AMARELA-15",
+      "CTO-AMARELA-16"
+    ]
+  },
+  {
+    "placa_pon": "8-14",
+    "placa": 8,
+    "pon": 14,
+    "clientes_atuais": 16,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 112,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "FTTA-PIAN-02",
+      "FTTA-PIAN-03"
+    ]
+  },
+  {
+    "placa_pon": "8-15",
+    "placa": 8,
+    "pon": 15,
+    "clientes_atuais": 94,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 34,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BELAVISTA-01",
+      "CTO-BELAVISTA-02",
+      "CTO-BELAVISTA-03",
+      "CTO-BELAVISTA-04",
+      "CTO-BELAVISTA-05",
+      "CTO-BELAVISTA-06",
+      "CTO-BELAVISTA-07",
+      "CTO-BELAVISTA-08"
+    ]
+  },
+  {
+    "placa_pon": "8-16",
+    "placa": 8,
+    "pon": 16,
+    "clientes_atuais": 101,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 27,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BEIRA-01",
+      "CTO-BEIRA-02",
+      "CTO-BEIRA-03",
+      "CTO-BEIRA-04",
+      "CTO-BEIRA-05",
+      "CTO-BEIRA-06",
+      "CTO-BEIRA-07",
+      "CTO-BEIRA-08",
+      "CTO-BEIRA-09",
+      "CTO-BEIRA-10"
+    ]
+  },
+  {
+    "placa_pon": "11-1",
+    "placa": 11,
+    "pon": 1,
+    "clientes_atuais": 89,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 39,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BENTO-09",
+      "CTO-BENTO-10",
+      "CTO-BENTO-11",
+      "CTO-BENTO-12",
+      "CTO-BENTO-13",
+      "CTO-BENTO-14"
+    ]
+  },
+  {
+    "placa_pon": "11-2",
+    "placa": 11,
+    "pon": 2,
+    "clientes_atuais": 126,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 2,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-VM-01",
+      "CTO-VM-02",
+      "CTO-VM-03",
+      "CTO-VM-04",
+      "CTO-VM-05",
+      "CTO-VM-06",
+      "CTO-VM-07",
+      "CTO-VM-08"
+    ]
+  },
+  {
+    "placa_pon": "11-3",
+    "placa": 11,
+    "pon": 3,
+    "clientes_atuais": 113,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 15,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BANRISUL",
+      "CTO-CALCADAO",
+      "CTO-GALLON",
+      "CTO-HIDROAR",
+      "CTO-JORGE-SANTOS",
+      "CTO-KAICE",
+      "CTO-PRADO",
+      "CTO-X3"
+    ]
+  },
+  {
+    "placa_pon": "11-4",
+    "placa": 11,
+    "pon": 4,
+    "clientes_atuais": 107,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 21,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-LIVRAMENTO-01",
+      "CTO-LIVRAMENTO-02",
+      "CTO-LIVRAMENTO-03",
+      "CTO-VIEIRA-01",
+      "CTO-VIEIRA-02",
+      "CTO-VIEIRA-03",
+      "CTO-VIEIRA-04",
+      "CTO-VIEIRA-05"
+    ]
+  },
+  {
+    "placa_pon": "11-5",
+    "placa": 11,
+    "pon": 5,
+    "clientes_atuais": 55,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 73,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BENTO-01",
+      "CTO-BENTO-02",
+      "CTO-BENTO-03",
+      "CTO-BENTO-04",
+      "CTO-BENTO-05",
+      "CTO-BENTO-06"
+    ]
+  },
+  {
+    "placa_pon": "11-6",
+    "placa": 11,
+    "pon": 6,
+    "clientes_atuais": 98,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 30,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-FS-01",
+      "CTO-FS-02",
+      "CTO-FS-03",
+      "CTO-FS-04",
+      "CTO-FS-05",
+      "CTO-FS-06",
+      "CTO-FS-07",
+      "CTO-FS-08"
+    ]
+  },
+  {
+    "placa_pon": "11-7",
+    "placa": 11,
+    "pon": 7,
+    "clientes_atuais": 82,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 46,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-DNR-1/1",
+      "CTO-DNR-1/2",
+      "CTO-EU-1/1",
+      "CTO-EU-1/2",
+      "CTO-EU-1/4",
+      "CTO-EU-1/7",
+      "CTO-EU-1/8"
+    ]
+  },
+  {
+    "placa_pon": "11-8",
+    "placa": 11,
+    "pon": 8,
+    "clientes_atuais": 123,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 5,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-CEN-A-01",
+      "CTO-CEN-A-02",
+      "CTO-CEN-A-03",
+      "CTO-CEN-A-04",
+      "CTO-CEN-A-05",
+      "CTO-CEN-A-06",
+      "CTO-CEN-A-07",
+      "CTO-CEN-A-08",
+      "CTO-CEN-A-09",
+      "CTO-CEN-A-10",
+      "CTO-CEN-A-11",
+      "CTO-CEN-A-12",
+      "CTO-CIACOM"
+    ]
+  },
+  {
+    "placa_pon": "12-1",
+    "placa": 12,
+    "pon": 1,
+    "clientes_atuais": 127,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 1,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-3DO-09",
+      "CTO-3DO-10",
+      "CTO-3DO-11",
+      "CTO-3DO-12",
+      "CTO-3DO-13",
+      "CTO-3DO-14",
+      "CTO-3DO-15",
+      "CTO-3DO-16",
+      "CTO-3DO-17"
+    ]
+  },
+  {
+    "placa_pon": "12-2",
+    "placa": 12,
+    "pon": 2,
+    "clientes_atuais": 93,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 35,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CN-08",
+      "CTO-CN-09",
+      "CTO-CN-10",
+      "CTO-CN-11",
+      "CTO-CN-12",
+      "CTO-CN-14",
+      "CTO-CN-15"
+    ]
+  },
+  {
+    "placa_pon": "12-3",
+    "placa": 12,
+    "pon": 3,
+    "clientes_atuais": 108,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 20,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-2-IRMAOS",
+      "CTO-ELETROFER",
+      "CTO-SANTA-CASA",
+      "CTO-SURDINA",
+      "CTO-TCHE",
+      "CTO-VANHOVE",
+      "CTO-VH-1/1"
+    ]
+  },
+  {
+    "placa_pon": "12-4",
+    "placa": 12,
+    "pon": 4,
+    "clientes_atuais": 112,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 16,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-BF-09",
+      "CTO-BF-10",
+      "CTO-BF-11",
+      "CTO-BF-12",
+      "CTO-BF-13",
+      "CTO-BF-14",
+      "CTO-BF-15"
+    ]
+  },
+  {
+    "placa_pon": "12-5",
+    "placa": 12,
+    "pon": 5,
+    "clientes_atuais": 97,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 31,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CANAS-01",
+      "CTO-HERMENEGILDO",
+      "CTO-MARIA-DOROTEIA",
+      "CTO-MARIANA-01",
+      "CTO-MARIANA-02",
+      "CTO-MARIANA-03",
+      "CTO-POSTO-BRANCO"
+    ]
+  },
+  {
+    "placa_pon": "12-6",
+    "placa": 12,
+    "pon": 6,
+    "clientes_atuais": 118,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 10,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-F.CHAGAS-01",
+      "CTO-F.CHAGAS-02",
+      "CTO-F.CHAGAS-03",
+      "CTO-F.CHAGAS-04",
+      "CTO-F.CHAGAS-05",
+      "CTO-F.CHAGAS-06",
+      "CTO-F.CHAGAS-07",
+      "CTO-F.CHAGAS-08",
+      "CTO-INOCENCIO-CUNHA"
+    ]
+  },
+  {
+    "placa_pon": "12-7",
+    "placa": 12,
+    "pon": 7,
+    "clientes_atuais": 127,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 1,
+    "status": "Quase cheia",
+    "status_tipo": "warning",
+    "ctos": [
+      "CTO-BELAVISTA-09",
+      "CTO-BELAVISTA-10",
+      "CTO-BELAVISTA-11",
+      "CTO-IZABEL-01",
+      "CTO-IZABEL-02",
+      "CTO-IZABEL-03",
+      "CTO-IZABEL-04",
+      "CTO-IZABEL-05"
+    ]
+  },
+  {
+    "placa_pon": "12-8",
+    "placa": 12,
+    "pon": 8,
+    "clientes_atuais": 38,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 90,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-ACACIAS-01",
+      "CTO-ACACIAS-02",
+      "CTO-ACACIAS-03",
+      "CTO-ITALIA-04",
+      "CTO-MEC-01",
+      "CTO-MEC-02",
+      "CTO-MEC-05",
+      "CTO-MEC-06",
+      "CTO-PARQUE-CARRETAS-01",
+      "CTO-PARQUE-CARRETAS-02"
+    ]
+  },
+  {
+    "placa_pon": "12-9",
+    "placa": 12,
+    "pon": 9,
+    "clientes_atuais": 121,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 7,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CELESTINO.C",
+      "CTO-NOVA-01",
+      "CTO-NOVA-02",
+      "CTO-NOVA-03",
+      "CTO-NOVA-04",
+      "CTO-NOVA-05",
+      "CTO-NOVA-06",
+      "CTO-NOVA-07",
+      "CTO-NOVA-08"
+    ]
+  },
+  {
+    "placa_pon": "12-10",
+    "placa": 12,
+    "pon": 10,
+    "clientes_atuais": 87,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 41,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-JB-A-01",
+      "CTO-JB-A-02",
+      "CTO-JB-A-03",
+      "CTO-JB-A-04",
+      "CTO-JB-A-05",
+      "CTO-JB-A-06",
+      "CTO-JB-A-07",
+      "CTO-JB-A-08",
+      "CTO-JB-A-09",
+      "CTO-JB-A-10",
+      "CTO-JB-A-11",
+      "CTO-JB-A-12",
+      "CTO-JB-A-13"
+    ]
+  },
+  {
+    "placa_pon": "12-11",
+    "placa": 12,
+    "pon": 11,
+    "clientes_atuais": 87,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 41,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-VIEIRA-06",
+      "CTO-VIEIRA-07",
+      "CTO-VIEIRA-08",
+      "CTO-VIEIRA-09",
+      "CTO-VIEIRA-10",
+      "CTO-VIEIRA-11",
+      "CTO-VIEIRA-12"
+    ]
+  },
+  {
+    "placa_pon": "12-12",
+    "placa": 12,
+    "pon": 12,
+    "clientes_atuais": 107,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 21,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-CHB-09",
+      "CTO-CHB-10",
+      "CTO-CHB-11",
+      "CTO-CHB-12",
+      "CTO-CHB-13",
+      "CTO-CHB-14",
+      "CTO-CHB-15",
+      "CTO-CHB-16",
+      "CTO-CHB-17"
+    ]
+  },
+  {
+    "placa_pon": "12-13",
+    "placa": 12,
+    "pon": 13,
+    "clientes_atuais": 112,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 16,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-ESP-03",
+      "CTO-ESP-04",
+      "CTO-ESP-05",
+      "CTO-ESP-06",
+      "CTO-ESP-07",
+      "CTO-ESP-08",
+      "CTO-ESP-09",
+      "CTO-ESP-10"
+    ]
+  },
+  {
+    "placa_pon": "12-14",
+    "placa": 12,
+    "pon": 14,
+    "clientes_atuais": 6,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 122,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "CTO-PARK-01",
+      "CTO-PARK-10",
+      "CTO-PARK-12",
+      "CTO-PARK-16"
+    ]
+  },
+  {
+    "placa_pon": "12-15",
+    "placa": 12,
+    "pon": 15,
+    "clientes_atuais": 63,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 65,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "RESIDENCIAL-BLOCO-H",
+      "RESIDENCIAL-BLOCO-I",
+      "RESIDENCIAL-BLOCO-J",
+      "RESIDENCIAL-BLOCO-K",
+      "RESIDENCIAL-BLOCO-L",
+      "RESIDENCIAL-BLOCO-M",
+      "RESIDENCIAL-BLOCO-N",
+      "RESIDENCIAL-BLOCO-O"
+    ]
+  },
+  {
+    "placa_pon": "12-16",
+    "placa": 12,
+    "pon": 16,
+    "clientes_atuais": 63,
+    "capacidade_total": 128,
+    "vagas_disponiveis": 65,
+    "status": "Livre",
+    "status_tipo": "free",
+    "ctos": [
+      "RESIDENCIAL-BLOCO-A",
+      "RESIDENCIAL-BLOCO-B",
+      "RESIDENCIAL-BLOCO-C",
+      "RESIDENCIAL-BLOCO-D",
+      "RESIDENCIAL-BLOCO-E",
+      "RESIDENCIAL-BLOCO-F",
+      "RESIDENCIAL-BLOCO-G"
+    ]
+  }
+];
+
+// Metadados da planilha
+const DATA_METADATA = {
+  lastUpdated: "24/09/2026",
+  responsible: "Valdeir",
+  googleSheetUrl: "https://docs.google.com/spreadsheets/d/1rWwViGvELZf6ZM5rnKngxbs0am7JFF-YJTj-9J2UvXg/edit?usp=sharing",
+  googleSheetCsvUrl: "https://docs.google.com/spreadsheets/d/1rWwViGvELZf6ZM5rnKngxbs0am7JFF-YJTj-9J2UvXg/export?format=csv&gid=373241118"
+};

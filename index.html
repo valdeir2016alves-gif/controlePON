@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Viabilidade Técnica & PONs - New Life</title>
+  <link rel="icon" type="image/png" href="logo.webp" />
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Base de dados local embutida -->
+  <script src="pon_data.js"></script>
+
+  <!-- Estilos New Life -->
+  <style>
+    :root {
+      --primary-color: #48cae4;
+      --primary-hover: #00b4d8;
+      --sector-title-color: #ffffff;
+      --bg-color: #0c1e3e;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #132d5e 0%, #0c1e3e 50%, #071329 100%);
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-bg-solid: #0f274e;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --card-border-hover: rgba(72, 202, 228, 0.4);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #00b4d8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-family: "Inter", system-ui, -apple-system, sans-serif;
+      --glow-color: rgba(72, 202, 228, 1);
+      --glow-color-faint: rgba(72, 202, 228, 0.2);
+    }
+
+    [data-theme="light"] {
+      --primary-color: #1e3a8a;
+      --primary-hover: #1e40af;
+      --sector-title-color: #1e3a8a;
+      --bg-color: #eff6ff;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #dbeafe 0%, #eff6ff 60%, #e0e7ff 100%);
+      --card-bg: #ffffff;
+      --card-bg-solid: #ffffff;
+      --card-border: #bfdbfe;
+      --card-border-hover: #3b82f6;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --accent: #1e3a8a;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --glow-color: rgba(30, 58, 138, 0.3);
+      --glow-color-faint: rgba(30, 58, 138, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .nl-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .nl-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--card-border-hover);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+    [data-theme="light"] .nl-card {
+      box-shadow: 0 4px 16px rgba(30, 58, 138, 0.06);
+    }
+
+    .nl-input {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .nl-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 12px var(--glow-color-faint);
+    }
+
+    .nl-btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s ease;
+    }
+    .nl-btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .nl-btn-icon {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .nl-btn-icon:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nl-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 6px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.78rem;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
+    .nl-tag:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--primary-color);
+    }
+
+    .nl-tab {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .nl-tab:hover {
+      border-color: var(--card-border-hover);
+      color: var(--text-main);
+    }
+    .nl-tab-active {
+      background: rgba(72, 202, 228, 0.12) !important;
+      border-color: var(--primary-color) !important;
+      color: var(--primary-color) !important;
+      box-shadow: 0 0 12px rgba(72, 202, 228, 0.25);
+    }
+
+    .led-online {
+      background-color: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-green 2s infinite;
+    }
+    @keyframes pulse-green {
+      0% { transform: scale(0.95); box-shadow: 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .led-warning {
+      background-color: var(--warning);
+      box-shadow: 0 0 8px var(--warning);
+      animation: pulse-yellow 2.5s infinite;
+    }
+    @keyframes pulse-yellow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.1); }
+    }
+
+    .led-danger {
+      background-color: var(--danger);
+      box-shadow: 0 0 10px var(--danger);
+      animation: pulse-red 1.8s infinite;
+    }
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px rgba(239, 68, 68, 0.8); }
+      50% { opacity: 0.4; transform: scale(1.15); box-shadow: 0 0 2px rgba(239, 68, 68, 0.2); }
+    }
+
+    @keyframes modalIn {
+      0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .nl-modal-box {
+      animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(12, 30, 62, 0.6);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(72, 202, 228, 0.3);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(72, 202, 228, 0.6);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Header Institucional New Life -->
+  <header class="border-b border-[var(--card-border)] bg-[var(--bg-color)]/95 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3 transition-colors">
+    <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Lado Esquerdo: Logo e Título com Indicador de Modo -->
+      <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-3.5">
+          <a href="#" class="flex items-center gap-2 group transition-transform hover:scale-105 duration-200" title="New Life Telecom">
+            <img src="logo.webp" alt="New Life - A sua nova internet" class="h-9 lg:h-11 w-auto object-contain filter drop-shadow-md" />
+          </a>
+
+          <div class="h-8 w-px bg-[var(--card-border)] hidden sm:block"></div>
+
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 id="headerMainTitle" class="font-extrabold text-base lg:text-lg tracking-tight text-[var(--sector-title-color)] flex items-center gap-2">
+                Controle PON & CTOs
+                <span id="headerBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(245,158,11,0.15)] text-[var(--warning)] font-bold border border-[rgba(245,158,11,0.3)] uppercase tracking-wider">
+                  Gestão OLT
+                </span>
+              </h1>
+            </div>
+            <p class="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
+              <span id="headerSubtitle">Painel Executivo & Engenharia</span>
+              <span class="inline-block w-1 h-1 rounded-full bg-[var(--primary-color)]"></span>
+              <span id="headerLastSync" class="text-[var(--text-main)] font-medium">Base 24/09/2026</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Botão Mobile para Login/Logout (Oculto) -->
+        <button id="mobileAuthBtn" onclick="handleAuthAction()" class="hidden md:hidden nl-btn-icon w-9 h-9" title="Acesso Admin">
+          <i id="mobileAuthIcon" data-lucide="lock" class="w-4 h-4 text-[var(--primary-color)]"></i>
+        </button>
+      </div>
+
+      <!-- Lado Direito: Ações, Abas de Modo, Status e Rádio -->
+      <div class="flex items-center gap-2.5 w-full md:w-auto justify-end flex-wrap">
+        
+        <!-- Status de Monitoramento -->
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[rgba(16,185,129,0.12)] border border-[rgba(16,185,129,0.25)] text-[var(--success)] text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full led-online"></span>
+          <span>Rede Monitorada</span>
+        </div>
+
+        <!-- Seletor de Visão (Livre para alternar entre Painel OLT e Viabilidade) -->
+        <div id="adminViewSwitcher" class="flex items-center gap-1 bg-[var(--card-bg)] p-1 rounded-lg border border-[var(--card-border)] text-xs">
+          <button onclick="switchView('admin')" id="switchBtnAdmin" class="px-2.5 py-1 rounded-md font-semibold nl-tab-active transition">
+            ⚙️ Painel OLT
+          </button>
+          <button onclick="switchView('viabilidade')" id="switchBtnViabilidade" class="px-2.5 py-1 rounded-md font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition">
+            🔍 Viabilidade
+          </button>
+        </div>
+
+        <!-- Ações: Sincronizar e Exportar -->
+        <div id="adminActionsBar" class="flex items-center gap-2">
+          <!-- Botão Sincronizar Google Sheets -->
+          <button id="btnSync" onclick="syncGoogleSheets()" class="nl-btn-primary flex items-center gap-2 px-3 py-2 text-xs">
+            <i id="syncIcon" data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span id="syncText">Sincronizar</span>
+          </button>
+
+          <!-- Botão Exportar CSV -->
+          <button onclick="exportToCSV()" class="nl-btn-icon px-3 py-2 text-xs gap-1.5" title="Exportar CSV">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-[var(--primary-color)]"></i>
+            <span class="hidden sm:inline">Exportar</span>
+          </button>
+        </div>
+
+        <!-- Alternador de Tema Dark / Light -->
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="nl-btn-icon w-9 h-9" title="Alternar Modo Claro / Escuro">
+          <i id="themeIcon" data-lucide="sun" class="w-4 h-4 text-[var(--primary-color)]"></i>
+        </button>
+
+        <!-- Botão de Login (Oculto - acesso direto liberado) -->
+        <button id="authBtn" onclick="handleAuthAction()" class="hidden flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition border cursor-pointer">
+          <i id="authBtnIcon" data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span id="authBtnText">Acesso Admin</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- 1. INTERFACE: PORTAL DE VIABILIDADE TÉCNICA -->
+  <!-- ============================================================== -->
+  <main id="viabilidadeView" class="hidden flex-1 max-w-[1600px] w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+    <!-- Hero / Caixa de Busca Rápida de Viabilidade -->
+    <section class="nl-card p-6 md:p-8 shadow-xl relative overflow-hidden bg-gradient-to-r from-[rgba(12,30,62,0.9)] via-[rgba(19,45,94,0.7)] to-[rgba(12,30,62,0.9)]">
+      <div class="max-w-4xl mx-auto space-y-4 text-center sm:text-left">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl md:text-2xl font-extrabold text-[var(--sector-title-color)] flex items-center justify-center sm:justify-start gap-2">
+              <i data-lucide="check-circle-2" class="w-6 h-6 text-[var(--primary-color)]"></i>
+              Consulta de Viabilidade de CTO
+            </h2>
+            <p class="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+              Consulte a disponibilidade de portas ópticas para novas instalações e vendas em tempo real
+            </p>
+          </div>
+          <span class="self-center sm:self-auto bg-[var(--card-bg)] px-3 py-1.5 rounded-lg border border-[var(--card-border)] text-xs text-[var(--text-muted)]">
+            Total: <strong id="publicTotalCtos" class="text-[var(--primary-color)] font-bold">--</strong> CTOs mapeadas
+          </span>
+        </div>
+
+        <!-- Input de Pesquisa Rápida -->
+        <div class="relative pt-2">
+          <div class="absolute inset-y-0 left-0 pl-4 pt-2 flex items-center pointer-events-none text-[var(--primary-color)]">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </div>
+          <input 
+            type="text" 
+            id="publicSearchInput" 
+            placeholder="Digite o nome da caixa (Ex: CTO-ANDRADE, CTO-AMARELA-05, BELAVISTA, RESIDENCIAL, SCM...)" 
+            class="nl-input w-full pl-12 pr-12 py-3.5 text-sm sm:text-base placeholder-[var(--text-muted)] font-medium shadow-inner"
+            oninput="handlePublicCtoSearch(this.value)"
+            autofocus
+          />
+          <button id="clearPublicSearchBtn" onclick="clearPublicSearch()" class="hidden absolute inset-y-0 right-0 pr-4 pt-2 flex items-center text-[var(--text-muted)] hover:text-[var(--text-main)]">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Resultado Instantâneo da Pesquisa -->
+        <div id="publicSearchResults" class="hidden space-y-2 pt-3 text-left">
+          <div class="flex items-center justify-between text-xs text-[var(--text-muted)] font-medium px-1">
+            <span id="publicResultStats">Resultados da busca:</span>
+            <span class="text-[var(--primary-color)] font-medium">Clique para ver viabilidade</span>
+          </div>
+          <div id="publicResultsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
+            <!-- Cards de CTO encontrados inseridos aqui -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Cards Resumo de Viabilidade da Rede -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Card: Total CTOs -->
+      <div class="nl-card p-4 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Total de Caixas (CTOs)</span>
+          <div class="text-2xl font-extrabold text-[var(--text-main)] mt-1" id="viabCardTotalCtos">--</div>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">Em todas as rotas e setores</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-[rgba(72,202,228,0.12)] text-[var(--primary-color)] flex items-center justify-center border border-[rgba(72,202,228,0.25)]">
+          <i data-lucide="boxes" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Card: CTOs com Vaga Livre -->
+      <div class="nl-card p-4 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Viabilidade Imediata</span>
+          <div class="text-2xl font-extrabold text-[var(--success)] mt-1" id="viabCardLivres">--</div>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">CTOs prontas p/ instalação</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-[rgba(16,185,129,0.12)] text-[var(--success)] flex items-center justify-center border border-[rgba(16,185,129,0.25)]">
+          <i data-lucide="check-circle" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Card: CTOs Quase Cheias -->
+      <div class="nl-card p-4 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Últimas Vagas (≤ 5)</span>
+          <div class="text-2xl font-extrabold text-[var(--warning)] mt-1" id="viabCardQuaseCheias">--</div>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">Poucas portas restantes</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-[rgba(245,158,11,0.12)] text-[var(--warning)] flex items-center justify-center border border-[rgba(245,158,11,0.25)]">
+          <i data-lucide="clock" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Card: CTOs Esgotadas -->
+      <div class="nl-card p-4 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Rotas Esgotadas (0 vagas)</span>
+          <div class="text-2xl font-extrabold text-[var(--danger)] mt-1" id="viabCardLotadas">--</div>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">Aguardando expansão técnica</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-[rgba(239,68,68,0.12)] text-[var(--danger)] flex items-center justify-center border border-[rgba(239,68,68,0.25)]">
+          <i data-lucide="alert-octagon" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Cards de Rotas e Caixas Ópticas (Estilo Department Cards do Ramais) -->
+    <section class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--card-border)] pb-3">
+        <div>
+          <h3 class="text-base font-bold text-[var(--sector-title-color)] flex items-center gap-2">
+            <i data-lucide="layout-grid" class="w-5 h-5 text-[var(--primary-color)]"></i>
+            Rotas e Caixas Ópticas por Setor
+          </h3>
+          <p class="text-xs text-[var(--text-muted)]">Navegue pelas caixas de cada rota para conferir disponibilidade</p>
+        </div>
+
+        <!-- Filtro Rápido de Rotas -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          <button onclick="filterViabRoute('all')" id="vtab-all" class="nl-tab nl-tab-active">Todas as Rotas</button>
+          <button onclick="filterViabRoute('1')" id="vtab-1" class="nl-tab">Placa 1</button>
+          <button onclick="filterViabRoute('2')" id="vtab-2" class="nl-tab">Placa 2</button>
+          <button onclick="filterViabRoute('3')" id="vtab-3" class="nl-tab">Placa 3</button>
+          <button onclick="filterViabRoute('4')" id="vtab-4" class="nl-tab">Placa 4</button>
+          <button onclick="filterViabRoute('6')" id="vtab-6" class="nl-tab">Placa 6</button>
+          <button onclick="filterViabRoute('8')" id="vtab-8" class="nl-tab">Placa 8</button>
+          <button onclick="filterViabRoute('11')" id="vtab-11" class="nl-tab">Placa 11</button>
+          <button onclick="filterViabRoute('12')" id="vtab-12" class="nl-tab">Placa 12</button>
+        </div>
+      </div>
+
+      <!-- Grid de Cards de Rotas (Módulos / Placas com suas CTOs) -->
+      <div id="viabilityRoutesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Inserido dinamicamente via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- 2. PAINEL EXECUTIVO & GESTÃO DA OLT (PRINCIPAL)                -->
+  <!-- ============================================================== -->
+  <main id="adminView" class="flex-1 max-w-[1600px] w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+    <!-- 5 KPIs Executivos Globais -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      
+      <!-- Clientes Ativos -->
+      <div class="nl-card p-4 relative overflow-hidden group">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Clientes Ativos</span>
+          <div class="w-8 h-8 rounded-lg bg-[rgba(72,202,228,0.12)] text-[var(--primary-color)] flex items-center justify-center border border-[rgba(72,202,228,0.25)]">
+            <i data-lucide="users" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpiAdminClientes" class="text-2xl lg:text-3xl font-extrabold text-[var(--text-main)] tracking-tight">--</span>
+          <span class="text-xs text-[var(--primary-color)] font-semibold">ONUs</span>
+        </div>
+        <p class="text-xs text-[var(--text-muted)] mt-1 flex items-center gap-1">
+          <i data-lucide="check-circle" class="w-3 h-3 text-[var(--success)]"></i>
+          Provisionadas na OLT
+        </p>
+      </div>
+
+      <!-- Capacidade Total -->
+      <div class="nl-card p-4 relative overflow-hidden group">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Capacidade Total</span>
+          <div class="w-8 h-8 rounded-lg bg-[rgba(72,202,228,0.12)] text-[var(--primary-color)] flex items-center justify-center border border-[rgba(72,202,228,0.25)]">
+            <i data-lucide="server" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpiAdminCapacidade" class="text-2xl lg:text-3xl font-extrabold text-[var(--text-main)] tracking-tight">--</span>
+          <span class="text-xs text-[var(--text-muted)] font-semibold">portas</span>
+        </div>
+        <p class="text-xs text-[var(--text-muted)] mt-1 flex items-center gap-1">
+          <span id="kpiAdminTotalPons" class="text-[var(--primary-color)] font-bold">68</span> portas PON ativas
+        </p>
+      </div>
+
+      <!-- Vagas Disponíveis -->
+      <div class="nl-card p-4 relative overflow-hidden group">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Vagas Disponíveis</span>
+          <div class="w-8 h-8 rounded-lg bg-[rgba(16,185,129,0.12)] text-[var(--success)] flex items-center justify-center border border-[rgba(16,185,129,0.25)]">
+            <i data-lucide="door-open" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpiAdminVagas" class="text-2xl lg:text-3xl font-extrabold text-[var(--success)] tracking-tight">--</span>
+          <span class="text-xs text-[var(--success)] font-semibold">livres</span>
+        </div>
+        <p class="text-xs text-[var(--text-muted)] mt-1 flex items-center gap-1">
+          Prontas p/ novas vendas
+        </p>
+      </div>
+
+      <!-- Taxa de Ocupação Global -->
+      <div class="nl-card p-4 relative overflow-hidden group">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Ocupação Global</span>
+          <div class="w-8 h-8 rounded-lg bg-[rgba(245,158,11,0.12)] text-[var(--warning)] flex items-center justify-center border border-[rgba(245,158,11,0.25)]">
+            <i data-lucide="pie-chart" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpiAdminOcupacao" class="text-2xl lg:text-3xl font-extrabold text-[var(--text-main)] tracking-tight">--%</span>
+        </div>
+        <div class="w-full bg-[var(--card-border)] h-2 rounded-full mt-2 overflow-hidden">
+          <div id="kpiAdminProgressBar" class="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Alertas Críticos -->
+      <div class="nl-card p-4 relative overflow-hidden group">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Atenção & Alertas</span>
+          <div class="w-8 h-8 rounded-lg bg-[rgba(239,68,68,0.12)] text-[var(--danger)] flex items-center justify-center border border-[rgba(239,68,68,0.25)]">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-baseline gap-1" title="PONs 100% Lotadas">
+            <span class="w-2.5 h-2.5 rounded-full bg-[var(--danger)] inline-block led-danger"></span>
+            <span id="kpiAdminLotadas" class="text-2xl font-extrabold text-[var(--danger)]">--</span>
+            <span class="text-xs text-[var(--danger)]">Lotadas</span>
+          </div>
+          <span class="text-[var(--card-border)]">|</span>
+          <div class="flex items-baseline gap-1" title="PONs com <= 5 vagas">
+            <span class="w-2.5 h-2.5 rounded-full bg-[var(--warning)] inline-block led-warning"></span>
+            <span id="kpiAdminQuaseCheias" class="text-2xl font-extrabold text-[var(--warning)]">--</span>
+            <span class="text-xs text-[var(--warning)]">Quase</span>
+          </div>
+        </div>
+        <p class="text-xs text-[var(--text-muted)] mt-1">Requer atenção da engenharia</p>
+      </div>
+
+    </section>
+
+    <!-- Visão Física da OLT (Chassi & Placas) -->
+    <section class="nl-card p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--card-border)] pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 rounded-lg bg-[rgba(72,202,228,0.12)] text-[var(--primary-color)] border border-[rgba(72,202,228,0.25)]">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-[var(--sector-title-color)] flex items-center gap-2">
+              Visão Física da OLT (Chassi & Slots)
+            </h2>
+            <p class="text-xs text-[var(--text-muted)]">Distribuição das portas ópticas por placa/slot com indicação de saturação por LED</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs text-[var(--text-muted)] bg-[var(--card-bg)] px-3 py-1.5 rounded-lg border border-[var(--card-border)]">
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--success)]"></span> Livre</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--warning)]"></span> Quase Cheia (≤5)</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--danger)]"></span> Lotada (0)</span>
+        </div>
+      </div>
+
+      <!-- Container dos Slots -->
+      <div id="adminChassisContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- Seção de Gráficos Analíticos -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      
+      <!-- Gráfico 1: Distribuição de Status -->
+      <div class="nl-card p-5 space-y-3 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-[var(--sector-title-color)] flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-4 h-4 text-[var(--primary-color)]"></i>
+            Distribuição de Status das PONs
+          </h3>
+          <span class="text-xs text-[var(--text-muted)] font-mono">68 portas</span>
+        </div>
+        <div class="relative h-56 flex items-center justify-center">
+          <canvas id="statusChart"></canvas>
+        </div>
+        <div id="statusChartLegend" class="grid grid-cols-3 gap-2 pt-2 border-t border-[var(--card-border)] text-center text-xs">
+          <!-- Legenda dinâmica inserida via JS -->
+        </div>
+      </div>
+
+      <!-- Gráfico 2: Ocupação por Placa/Slot -->
+      <div class="nl-card p-5 space-y-3 lg:col-span-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-[var(--sector-title-color)] flex items-center gap-2">
+              <i data-lucide="bar-chart-2" class="w-4 h-4 text-[var(--primary-color)]"></i>
+              Ocupação de Clientes e Vagas por Placa / Slot
+            </h3>
+            <p class="text-xs text-[var(--text-muted)]">Comparativo de capacidade e uso entre os módulos da OLT</p>
+          </div>
+          <span class="text-xs text-[var(--text-muted)] font-mono">Clientes vs Vagas</span>
+        </div>
+        <div class="relative h-64">
+          <canvas id="placasChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tabela Gerencial Completa de Portas PON -->
+    <section class="nl-card p-5 space-y-4">
+      
+      <!-- Cabeçalho da Tabela e Controles -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--card-border)] pb-4">
+        <div>
+          <h2 class="text-base font-bold text-[var(--sector-title-color)] flex items-center gap-2">
+            <i data-lucide="table" class="w-5 h-5 text-[var(--primary-color)]"></i>
+            Detalhamento Completo das Portas PON
+          </h2>
+          <p class="text-xs text-[var(--text-muted)]">Controle de ocupação, vagas e caixas ópticas conectadas por porta</p>
+        </div>
+
+        <!-- Filtros em Dropdown e Busca -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          
+          <div class="flex items-center gap-1.5 bg-[var(--card-bg)] px-3 py-1.5 rounded-lg border border-[var(--card-border)] text-xs">
+            <span class="text-[var(--text-muted)] font-medium">Placa:</span>
+            <select id="filterPlaca" onchange="applyFilters()" class="bg-transparent text-[var(--text-main)] font-semibold focus:outline-none cursor-pointer">
+              <option value="all" class="bg-[var(--card-bg-solid)]">Todas as Placas</option>
+              <option value="1" class="bg-[var(--card-bg-solid)]">Placa 1 (6 PONs)</option>
+              <option value="2" class="bg-[var(--card-bg-solid)]">Placa 2 (8 PONs)</option>
+              <option value="3" class="bg-[var(--card-bg-solid)]">Placa 3 (8 PONs)</option>
+              <option value="4" class="bg-[var(--card-bg-solid)]">Placa 4 (8 PONs)</option>
+              <option value="6" class="bg-[var(--card-bg-solid)]">Placa 6 (8 PONs)</option>
+              <option value="8" class="bg-[var(--card-bg-solid)]">Placa 8 (16 PONs)</option>
+              <option value="11" class="bg-[var(--card-bg-solid)]">Placa 11 (8 PONs)</option>
+              <option value="12" class="bg-[var(--card-bg-solid)]">Placa 12 (16 PONs)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-1.5 bg-[var(--card-bg)] px-3 py-1.5 rounded-lg border border-[var(--card-border)] text-xs">
+            <span class="text-[var(--text-muted)] font-medium">Status:</span>
+            <select id="filterStatus" onchange="applyFilters()" class="bg-transparent text-[var(--text-main)] font-semibold focus:outline-none cursor-pointer">
+              <option value="all" class="bg-[var(--card-bg-solid)]">Todos os Status</option>
+              <option value="free" class="bg-[var(--card-bg-solid)]">🟢 Livre</option>
+              <option value="warning" class="bg-[var(--card-bg-solid)]">🟡 Quase Cheia</option>
+              <option value="danger" class="bg-[var(--card-bg-solid)]">🔴 Lotada</option>
+            </select>
+          </div>
+
+          <div class="relative">
+            <input 
+              type="text" 
+              id="tableSearchInput" 
+              placeholder="Filtrar PON ou CTO..." 
+              class="nl-input w-44 sm:w-56 pl-8 pr-3 py-1.5 text-xs placeholder-[var(--text-muted)]"
+              oninput="applyFilters()"
+            />
+            <i data-lucide="search" class="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-2.5 top-2.5"></i>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Abas Rápidas -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <span class="text-[var(--text-muted)] whitespace-nowrap font-medium">Filtros rápidos:</span>
+        <button onclick="setQuickFilter('all')" id="qf-all" class="nl-tab nl-tab-active">Todos (<span id="count-all">68</span>)</button>
+        <button onclick="setQuickFilter('lotadas')" id="qf-lotadas" class="nl-tab text-[var(--danger)]">🔴 Lotadas (<span id="count-lotadas">2</span>)</button>
+        <button onclick="setQuickFilter('quase-cheias')" id="qf-quase-cheias" class="nl-tab text-[var(--warning)]">🟡 Quase Cheias (<span id="count-quase-cheias">14</span>)</button>
+        <button onclick="setQuickFilter('livres')" id="qf-livres" class="nl-tab text-[var(--success)]">🟢 Livres (<span id="count-livres">52</span>)</button>
+        <button onclick="setQuickFilter('top-vagas')" id="qf-top-vagas" class="nl-tab text-[var(--primary-color)]">🚀 Mais Vagas (> 50)</button>
+      </div>
+
+      <!-- Tabela -->
+      <div class="overflow-x-auto rounded-xl border border-[var(--card-border)]">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-[rgba(255,255,255,0.03)] text-[var(--text-muted)] border-b border-[var(--card-border)] select-none">
+              <th onclick="sortTable('placa_pon')" class="py-3 px-3.5 font-semibold cursor-pointer hover:text-[var(--text-main)] transition">
+                <div class="flex items-center gap-1.5">
+                  <span>Placa / PON</span>
+                  <i data-lucide="arrow-up-down" class="w-3 h-3 text-[var(--primary-color)]"></i>
+                </div>
+              </th>
+              <th onclick="sortTable('clientes_atuais')" class="py-3 px-3 font-semibold cursor-pointer hover:text-[var(--text-main)] transition text-center">
+                <div class="flex items-center justify-center gap-1.5">
+                  <span>Clientes</span>
+                  <i data-lucide="arrow-up-down" class="w-3 h-3 text-[var(--primary-color)]"></i>
+                </div>
+              </th>
+              <th class="py-3 px-3 font-semibold text-center">Capacidade</th>
+              <th onclick="sortTable('vagas_disponiveis')" class="py-3 px-3 font-semibold cursor-pointer hover:text-[var(--text-main)] transition text-center">
+                <div class="flex items-center justify-center gap-1.5">
+                  <span>Vagas</span>
+                  <i data-lucide="arrow-up-down" class="w-3 h-3 text-[var(--primary-color)]"></i>
+                </div>
+              </th>
+              <th onclick="sortTable('taxa_ocupacao')" class="py-3 px-4 font-semibold cursor-pointer hover:text-[var(--text-main)] transition w-44">
+                <div class="flex items-center gap-1.5">
+                  <span>Ocupação (%)</span>
+                  <i data-lucide="arrow-up-down" class="w-3 h-3 text-[var(--primary-color)]"></i>
+                </div>
+              </th>
+              <th onclick="sortTable('status')" class="py-3 px-3 font-semibold cursor-pointer hover:text-[var(--text-main)] transition text-center">
+                <div class="flex items-center justify-center gap-1.5">
+                  <span>Status</span>
+                  <i data-lucide="arrow-up-down" class="w-3 h-3 text-[var(--primary-color)]"></i>
+                </div>
+              </th>
+              <th class="py-3 px-4 font-semibold">CTOs Atendidas</th>
+              <th class="py-3 px-3 font-semibold text-right">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="ponTableBody" class="divide-y divide-[var(--card-border)] font-mono">
+            <!-- Linhas dinâmicas -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Rodapé da Tabela -->
+      <div class="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 px-1">
+        <span>Exibindo <strong id="visibleRowCount" class="text-[var(--text-main)]">68</strong> de <span id="totalRowCount">68</span> portas PON</span>
+        <button onclick="exportToCSV()" class="text-[var(--primary-color)] hover:underline font-semibold flex items-center gap-1">
+          <i data-lucide="download" class="w-3 h-3"></i>
+          Baixar tabela atual em CSV
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- 3. MODAIS: LOGIN ADMIN & DETALHES DE VIABILIDADE               -->
+  <!-- ============================================================== -->
+
+  <!-- Modal de Login Administrativo (Estilo _loginBox do Ramais New Life) -->
+  <div id="loginModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="nl-modal-box bg-[var(--card-bg-solid)] border border-[var(--card-border-hover)] w-full max-w-sm rounded-2xl shadow-2xl p-6 sm:p-8 text-center space-y-5">
+      
+      <!-- Topo com Logo -->
+      <div class="flex flex-col items-center gap-2">
+        <img src="logo.webp" alt="New Life" class="h-10 w-auto object-contain filter drop-shadow-md mb-1" />
+        <h3 class="text-xl font-bold text-[var(--sector-title-color)]">
+          Acesso Administrativo
+        </h3>
+        <p class="text-xs text-[var(--text-muted)]">
+          Área restrita de gestão da OLT e controle operacional
+        </p>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form onsubmit="handleLoginSubmit(event)" class="space-y-3.5 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-[var(--text-muted)] uppercase mb-1">Usuário</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="loginUsername" 
+              value="admin"
+              required
+              class="nl-input w-full px-3.5 py-2.5 text-sm"
+              placeholder="Digite o usuário"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-[var(--text-muted)] uppercase mb-1">Senha</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              required
+              class="nl-input w-full px-3.5 py-2.5 text-sm"
+              placeholder="Digite a senha"
+              autocomplete="current-password"
+            />
+          </div>
+        </div>
+
+        <div id="loginErrorMsg" class="hidden p-2 rounded-lg bg-[rgba(239,68,68,0.15)] border border-[rgba(239,68,68,0.3)] text-xs text-[var(--danger)] text-center font-medium">
+          Usuário ou senha incorretos!
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button type="button" onclick="closeLoginModal()" class="w-1/2 py-2.5 rounded-lg border border-[var(--card-border)] hover:bg-[rgba(255,255,255,0.05)] text-xs text-[var(--text-muted)] font-semibold transition">
+            Cancelar
+          </button>
+          <button type="submit" class="w-1/2 nl-btn-primary py-2.5 text-xs font-bold">
+            Entrar
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes da PON e CTOs -->
+  <div id="ponModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="nl-modal-box bg-[var(--card-bg-solid)] border border-[var(--card-border-hover)] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
+      
+      <div class="p-5 border-b border-[var(--card-border)] flex items-center justify-between bg-[rgba(255,255,255,0.03)]">
+        <div class="flex items-center gap-3">
+          <div id="modalIconBox" class="w-10 h-10 rounded-xl bg-[rgba(72,202,228,0.15)] text-[var(--primary-color)] flex items-center justify-center font-bold border border-[rgba(72,202,228,0.3)]">
+            <i data-lucide="network" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="modalTitle" class="text-lg font-bold text-[var(--sector-title-color)] flex items-center gap-2">
+              Detalhes da PON --
+            </h3>
+            <p id="modalSubtitle" class="text-xs text-[var(--text-muted)]">Informações detalhadas de capacidade e lista de caixas</p>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="nl-btn-icon w-8 h-8 rounded-full" title="Fechar">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
+        
+        <div class="grid grid-cols-4 gap-3 text-center">
+          <div class="bg-[var(--card-bg)] p-3 rounded-xl border border-[var(--card-border)]">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Clientes</span>
+            <div id="modalClientes" class="text-xl font-bold text-[var(--text-main)] mt-0.5">--</div>
+          </div>
+          <div class="bg-[var(--card-bg)] p-3 rounded-xl border border-[var(--card-border)]">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Capacidade</span>
+            <div id="modalCapacidade" class="text-xl font-bold text-[var(--text-main)] mt-0.5">128</div>
+          </div>
+          <div class="bg-[var(--card-bg)] p-3 rounded-xl border border-[var(--card-border)]">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Vagas Livres</span>
+            <div id="modalVagas" class="text-xl font-bold text-[var(--success)] mt-0.5">--</div>
+          </div>
+          <div class="bg-[var(--card-bg)] p-3 rounded-xl border border-[var(--card-border)]">
+            <span class="text-[10px] text-[var(--text-muted)] uppercase font-semibold">Ocupação</span>
+            <div id="modalOcupacao" class="text-xl font-bold text-[var(--text-main)] mt-0.5">--%</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs text-[var(--text-muted)] mb-1.5 font-medium">
+            <span>Saturação da Porta PON</span>
+            <span id="modalStatusBadge">--</span>
+          </div>
+          <div class="w-full bg-[var(--card-border)] h-2.5 rounded-full overflow-hidden">
+            <div id="modalProgressBar" class="h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+          </div>
+        </div>
+
+        <div id="modalEngineeringBox" class="p-3.5 rounded-xl border text-xs">
+          <!-- Alerta preenchido dinamicamente -->
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-bold text-[var(--sector-title-color)] uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="boxes" class="w-3.5 h-3.5 text-[var(--primary-color)]"></i>
+              Caixas de Terminação Óptica (<span id="modalCtosCount">0</span> CTOs)
+            </h4>
+            <button onclick="copyModalCtos()" class="text-xs text-[var(--primary-color)] hover:underline flex items-center gap-1 font-semibold">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Copiar Lista</span>
+            </button>
+          </div>
+          <div id="modalCtosList" class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-3 bg-[var(--card-bg)] rounded-xl border border-[var(--card-border)] custom-scrollbar">
+            <!-- Badges de CTOs -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-4 border-t border-[var(--card-border)] bg-[rgba(255,255,255,0.03)] flex items-center justify-end">
+        <button onclick="closeModal()" class="nl-btn-primary px-5 py-2 text-xs">
+          Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[var(--card-bg-solid)] border border-[var(--primary-color)] shadow-2xl text-[var(--text-main)] text-xs">
+    <i id="toastIcon" data-lucide="check" class="w-4 h-4 text-[var(--primary-color)]"></i>
+    <span id="toastMsg">Notificação</span>
+  </div>
+
+  <!-- Rodapé New Life -->
+  <footer class="border-t border-[var(--card-border)] bg-[var(--bg-color)] py-4 px-4 text-center text-xs text-[var(--text-muted)] transition-colors">
+    <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <img src="logo.webp" alt="New Life" class="h-4 w-auto object-contain opacity-80" />
+        <span>New Life • Portal de Viabilidade Técnica e Monitoramento GPON</span>
+      </div>
+      <p>Base integrada: <span id="footerSync" class="text-[var(--primary-color)] font-medium">Google Sheets 2026</span></p>
+    </div>
+  </footer>
+
+  <!-- Scripts e Lógica da Aplicação -->
+  <script>
+    // Estado global
+    let ponData = [];
+    let filteredData = [];
+    let currentSort = { column: 'placa_pon', asc: true };
+    let statusChartInstance = null;
+    let placasChartInstance = null;
+    let selectedQuickFilter = 'all';
+    let selectedViabRoute = 'all';
+    let isAdminLoggedIn = true;
+    let currentActiveView = 'admin'; // 'admin' ou 'viabilidade'
+
+    function calcRowMetrics(p) {
+      const cap = Number(p.capacidade_total) || 128;
+      const cli = Number(p.clientes_atuais) || 0;
+      const vagas = typeof p.vagas_disponiveis === 'number' ? p.vagas_disponiveis : (cap - cli);
+      const taxa = cap > 0 ? Number(((cli / cap) * 100).toFixed(1)) : 0;
+      
+      let status = p.status || '';
+      let statusTipo = p.status_tipo;
+      if (!statusTipo) {
+        const s = status.toLowerCase();
+        if (s.includes('lotad') || vagas <= 0) {
+          statusTipo = 'danger';
+          status = 'Lotada';
+        } else if (s.includes('quase') || vagas <= 5) {
+          statusTipo = 'warning';
+          status = 'Quase cheia';
+        } else {
+          statusTipo = 'free';
+          status = 'Livre';
+        }
+      }
+
+      return {
+        ...p,
+        placa: Number(p.placa) || (p.placa_pon ? parseInt(p.placa_pon.split('-')[0], 10) : 0),
+        pon: Number(p.pon) || (p.placa_pon ? parseInt(p.placa_pon.split('-')[1], 10) : 0),
+        clientes_atuais: cli,
+        capacidade_total: cap,
+        vagas_disponiveis: vagas,
+        taxa_ocupacao: taxa,
+        status: status,
+        status_tipo: statusTipo,
+        ctos: Array.isArray(p.ctos) ? p.ctos : []
+      };
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tema salvo
+      const savedTheme = localStorage.getItem('nl_theme') || 'dark';
+      setTheme(savedTheme);
+
+      // Base inicial
+      if (typeof INITIAL_PON_DATA !== 'undefined' && Array.isArray(INITIAL_PON_DATA)) {
+        ponData = INITIAL_PON_DATA.map(calcRowMetrics);
+      }
+      
+      initApplication();
+      lucide.createIcons();
+
+      // Sincronização em segundo plano
+      setTimeout(() => {
+        syncGoogleSheets(true);
+      }, 1500);
+    });
+
+    function initApplication() {
+      updateAuthUI();
+      updateViabilityDashboard();
+      updateAdminDashboard();
+    }
+
+    // Gerenciador de Visão e Ações
+    function updateAuthUI() {
+      const authBtn = document.getElementById('authBtn');
+      const mobileAuthBtn = document.getElementById('mobileAuthBtn');
+      const adminViewSwitcher = document.getElementById('adminViewSwitcher');
+      const adminActionsBar = document.getElementById('adminActionsBar');
+
+      if (authBtn) authBtn.classList.add('hidden');
+      if (mobileAuthBtn) mobileAuthBtn.classList.add('hidden');
+      if (adminViewSwitcher) adminViewSwitcher.classList.remove('hidden');
+      if (adminActionsBar) adminActionsBar.classList.remove('hidden');
+
+      if (currentActiveView === 'viabilidade') {
+        showViabilityView();
+      } else {
+        showAdminView();
+      }
+
+      lucide.createIcons();
+    }
+
+    function handleAuthAction() {
+      if (isAdminLoggedIn) {
+        handleLogout();
+      } else {
+        openLoginModal();
+      }
+    }
+
+    function openLoginModal() {
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginErrorMsg').classList.add('hidden');
+      document.getElementById('loginModal').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('loginPassword').focus();
+      }, 100);
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const user = document.getElementById('loginUsername').value.trim();
+      const pass = document.getElementById('loginPassword').value.trim();
+
+      // Credenciais oficiais fornecidas
+      if (user === 'admin' && pass === 'newlife33') {
+        isAdminLoggedIn = true;
+        sessionStorage.setItem('nl_admin_auth', 'true');
+        closeLoginModal();
+        currentActiveView = 'admin';
+        updateAuthUI();
+        showToast("Bem-vindo ao Painel de Gestão da OLT!", "check");
+      } else {
+        document.getElementById('loginErrorMsg').classList.remove('hidden');
+      }
+    }
+
+    function handleLogout() {
+      isAdminLoggedIn = false;
+      sessionStorage.removeItem('nl_admin_auth');
+      currentActiveView = 'viabilidade';
+      updateAuthUI();
+      showToast("Sessão administrativa finalizada.", "log-out");
+    }
+
+    function switchView(viewName) {
+      currentActiveView = viewName;
+      if (viewName === 'admin') {
+        showAdminView();
+      } else {
+        showViabilityView();
+      }
+    }
+
+    function showViabilityView() {
+      document.getElementById('viabilidadeView').classList.remove('hidden');
+      document.getElementById('adminView').classList.add('hidden');
+      
+      document.getElementById('headerMainTitle').innerHTML = `
+        Portal de Viabilidade
+        <span id="headerBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(72,202,228,0.15)] text-[var(--primary-color)] font-bold border border-[rgba(72,202,228,0.3)] uppercase tracking-wider">
+          Vendas & Campo
+        </span>
+      `;
+      document.getElementById('headerSubtitle').textContent = "Consulta Rápida de CTOs e Vagas";
+
+      const btnV = document.getElementById('switchBtnViabilidade');
+      const btnA = document.getElementById('switchBtnAdmin');
+      if (btnV && btnA) {
+        btnV.className = "px-2.5 py-1 rounded-md font-semibold nl-tab-active transition";
+        btnA.className = "px-2.5 py-1 rounded-md font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition";
+      }
+      lucide.createIcons();
+    }
+
+    function showAdminView() {
+      document.getElementById('viabilidadeView').classList.add('hidden');
+      document.getElementById('adminView').classList.remove('hidden');
+
+      document.getElementById('headerMainTitle').innerHTML = `
+        Controle PON & CTOs
+        <span id="headerBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(245,158,11,0.15)] text-[var(--warning)] font-bold border border-[rgba(245,158,11,0.3)] uppercase tracking-wider">
+          Gestão OLT
+        </span>
+      `;
+      document.getElementById('headerSubtitle').textContent = "Painel Executivo & Engenharia";
+
+      const btnV = document.getElementById('switchBtnViabilidade');
+      const btnA = document.getElementById('switchBtnAdmin');
+      if (btnV && btnA) {
+        btnV.className = "px-2.5 py-1 rounded-md font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition";
+        btnA.className = "px-2.5 py-1 rounded-md font-semibold nl-tab-active transition";
+      }
+
+      renderCharts();
+      lucide.createIcons();
+    }
+
+    // ================================================================
+    // LÓGICA DO PORTAL DE VIABILIDADE TÉCNICA (PÚBLICA)
+    // ================================================================
+    function updateViabilityDashboard() {
+      // Contagem total de CTOs
+      let allCtos = [];
+      let ctosLivres = 0;
+      let ctosQuaseCheias = 0;
+      let ctosLotadas = 0;
+
+      ponData.forEach(p => {
+        p.ctos.forEach(ctoName => {
+          allCtos.push({ cto: ctoName, pon: p });
+          if (p.status_tipo === 'danger') ctosLotadas++;
+          else if (p.status_tipo === 'warning') ctosQuaseCheias++;
+          else ctosLivres++;
+        });
+      });
+
+      document.getElementById('publicTotalCtos').textContent = allCtos.length;
+      document.getElementById('viabCardTotalCtos').textContent = allCtos.length;
+      document.getElementById('viabCardLivres').textContent = ctosLivres;
+      document.getElementById('viabCardQuaseCheias').textContent = ctosQuaseCheias;
+      document.getElementById('viabCardLotadas').textContent = ctosLotadas;
+
+      renderViabilityRoutes();
+    }
+
+    function renderViabilityRoutes() {
+      const container = document.getElementById('viabilityRoutesContainer');
+      container.innerHTML = '';
+
+      // Agrupa por placa
+      const placasMap = {};
+      ponData.forEach(p => {
+        if (!placasMap[p.placa]) placasMap[p.placa] = [];
+        placasMap[p.placa].push(p);
+      });
+
+      const placasKeys = Object.keys(placasMap).map(Number).sort((a,b) => a - b);
+
+      placasKeys.forEach(placaNum => {
+        if (selectedViabRoute !== 'all' && String(placaNum) !== selectedViabRoute) return;
+
+        const pons = placasMap[placaNum].sort((a,b) => a.pon - b.pon);
+        let routeCtos = [];
+        let totalVagas = 0;
+
+        pons.forEach(p => {
+          totalVagas += p.vagas_disponiveis;
+          p.ctos.forEach(c => {
+            routeCtos.push({ name: c, pon: p });
+          });
+        });
+
+        const card = document.createElement('div');
+        card.className = "nl-card p-4 space-y-3 flex flex-col justify-between";
+
+        let headerHtml = `
+          <div class="flex items-center justify-between border-b border-[var(--card-border)] pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-md bg-[var(--primary-color)] flex items-center justify-center text-[8px] font-bold text-[#0c1e3e]">${placaNum}</span>
+              <div>
+                <h4 class="font-bold text-xs text-[var(--sector-title-color)]">Slot ${String(placaNum).padStart(2, '0')} • Rota Óptica</h4>
+                <p class="text-[10px] text-[var(--text-muted)] font-mono">${routeCtos.length} CTOs mapeadas</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${totalVagas > 50 ? 'bg-[rgba(16,185,129,0.15)] text-[var(--success)]' : 'bg-[rgba(245,158,11,0.15)] text-[var(--warning)]'} font-mono">
+              ${totalVagas} vagas
+            </span>
+          </div>
+        `;
+
+        // Lista de CTOs da Rota (Amostra com tags clicáveis)
+        const visibleCtos = routeCtos.slice(0, 10);
+        const remainingCtos = routeCtos.length - visibleCtos.length;
+
+        let ctosHtml = `<div class="flex flex-wrap gap-1.5 py-1">`;
+        visibleCtos.forEach(item => {
+          let dotColor = 'bg-[var(--success)]';
+          if (item.pon.status_tipo === 'danger') dotColor = 'bg-[var(--danger)]';
+          else if (item.pon.status_tipo === 'warning') dotColor = 'bg-[var(--warning)]';
+
+          ctosHtml += `
+            <button 
+              onclick="openPonModal('${item.pon.placa_pon}')" 
+              class="nl-tag text-[10px] font-mono cursor-pointer hover:scale-105"
+              title="${item.name} (${item.pon.vagas_disponiveis} vagas livres)"
+            >
+              <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
+              <span class="truncate max-w-[110px]">${item.name}</span>
+            </button>
+          `;
+        });
+
+        if (remainingCtos > 0) {
+          ctosHtml += `
+            <button onclick="openRouteAllCtos(${placaNum})" class="px-2 py-0.5 rounded-md bg-[rgba(72,202,228,0.1)] text-[var(--primary-color)] text-[10px] font-semibold border border-[rgba(72,202,228,0.25)] hover:bg-[rgba(72,202,228,0.2)] transition">
+              +${remainingCtos} caixas
+            </button>
+          `;
+        }
+        ctosHtml += `</div>`;
+
+        let footerHtml = `
+          <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] pt-2 border-t border-[var(--card-border)] font-mono">
+            <span>${pons.length} Portas PON</span>
+            <button onclick="filterByPlacaQuick(${placaNum})" class="text-[var(--primary-color)] hover:underline font-semibold">
+              Ver Detalhes →
+            </button>
+          </div>
+        `;
+
+        card.innerHTML = headerHtml + ctosHtml + footerHtml;
+        container.appendChild(card);
+      });
+    }
+
+    function filterViabRoute(route) {
+      selectedViabRoute = route;
+      const routes = ['all', '1', '2', '3', '4', '6', '8', '11', '12'];
+      routes.forEach(r => {
+        const btn = document.getElementById(`vtab-${r}`);
+        if (!btn) return;
+        if (r === route) btn.classList.add('nl-tab-active');
+        else btn.classList.remove('nl-tab-active');
+      });
+      renderViabilityRoutes();
+    }
+
+    function openRouteAllCtos(placaNum) {
+      if (isAdminLoggedIn) {
+        filterByPlacaQuick(placaNum);
+      } else {
+        // Filtra na busca pública
+        const input = document.getElementById('publicSearchInput');
+        input.value = `Placa ${placaNum}`;
+        handlePublicCtoSearch(input.value);
+        document.getElementById('publicSearchResults').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Busca Pública de Viabilidade
+    function handlePublicCtoSearch(query) {
+      const clean = query.trim().toLowerCase();
+      const resultsContainer = document.getElementById('publicSearchResults');
+      const resultsGrid = document.getElementById('publicResultsGrid');
+      const clearBtn = document.getElementById('clearPublicSearchBtn');
+
+      if (!clean) {
+        resultsContainer.classList.add('hidden');
+        clearBtn.classList.add('hidden');
+        return;
+      }
+
+      clearBtn.classList.remove('hidden');
+
+      const matches = [];
+      ponData.forEach(p => {
+        p.ctos.forEach(ctoName => {
+          if (ctoName.toLowerCase().includes(clean)) {
+            matches.push({ cto: ctoName, pon: p });
+          }
+        });
+      });
+
+      document.getElementById('publicResultStats').innerHTML = `
+        Encontrado(s) <strong>${matches.length}</strong> resultado(s) para "<strong>${query}</strong>":
+      `;
+
+      resultsGrid.innerHTML = '';
+
+      if (matches.length === 0) {
+        resultsGrid.innerHTML = `
+          <div class="col-span-full py-6 text-center text-xs text-[var(--text-muted)] bg-[var(--card-bg)] rounded-xl border border-[var(--card-border)]">
+            Nenhuma CTO encontrada com o termo "<strong>${query}</strong>". Verifique a grafia ou consulte a equipe de projetos.
+          </div>
+        `;
+      } else {
+        matches.slice(0, 18).forEach(m => {
+          const item = m.pon;
+          let badge = '';
+          let border = 'border-[var(--card-border)] hover:border-[var(--primary-color)]';
+
+          if (item.status_tipo === 'danger') {
+            badge = `<span class="text-[10px] text-[var(--danger)] font-bold bg-[rgba(239,68,68,0.12)] px-2 py-0.5 rounded border border-[rgba(239,68,68,0.25)]">Sem Vaga (0)</span>`;
+            border = 'border-[var(--danger)]/40 bg-[rgba(239,68,68,0.06)]';
+          } else if (item.status_tipo === 'warning') {
+            badge = `<span class="text-[10px] text-[var(--warning)] font-bold bg-[rgba(245,158,11,0.12)] px-2 py-0.5 rounded border border-[rgba(245,158,11,0.25)]">${item.vagas_disponiveis} vaga(s) restantes</span>`;
+            border = 'border-[var(--warning)]/40 bg-[rgba(245,158,11,0.06)]';
+          } else {
+            badge = `<span class="text-[10px] text-[var(--success)] font-bold bg-[rgba(16,185,129,0.12)] px-2 py-0.5 rounded border border-[rgba(16,185,129,0.25)]">${item.vagas_disponiveis} vagas livres ✅</span>`;
+          }
+
+          const card = document.createElement('div');
+          card.className = `nl-card p-3 flex flex-col justify-between space-y-2 ${border}`;
+          card.innerHTML = `
+            <div class="flex items-center justify-between gap-1">
+              <span class="font-bold text-xs text-[var(--sector-title-color)] font-mono truncate" title="${m.cto}">${m.cto}</span>
+              ${badge}
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-mono pt-1 border-t border-[var(--card-border)]">
+              <span>Porta: <strong class="text-[var(--primary-color)] font-bold">${item.placa_pon}</strong></span>
+              <span>${item.vagas_disponiveis} disponíveis</span>
+            </div>
+            <button onclick="openPonModal('${item.placa_pon}')" class="w-full text-center py-1.5 rounded bg-[var(--card-bg)] hover:bg-[var(--primary-color)]/20 text-[10px] text-[var(--primary-color)] font-semibold border border-[var(--card-border)] transition">
+              Consultar Viabilidade Completa
+            </button>
+          `;
+          resultsGrid.appendChild(card);
+        });
+
+        if (matches.length > 18) {
+          const moreCard = document.createElement('div');
+          moreCard.className = "col-span-full text-center py-2 text-xs text-[var(--text-muted)]";
+          moreCard.textContent = `... e mais ${matches.length - 18} CTOs encontradas. Refine a pesquisa para filtrar melhor.`;
+          resultsGrid.appendChild(moreCard);
+        }
+      }
+
+      resultsContainer.classList.remove('hidden');
+    }
+
+    function clearPublicSearch() {
+      const input = document.getElementById('publicSearchInput');
+      input.value = '';
+      document.getElementById('publicSearchResults').classList.add('hidden');
+      document.getElementById('clearPublicSearchBtn').classList.add('hidden');
+    }
+
+    // ================================================================
+    // LÓGICA DO PAINEL ADMINISTRATIVO
+    // ================================================================
+    function updateAdminDashboard() {
+      const totalClientes = ponData.reduce((acc, p) => acc + p.clientes_atuais, 0);
+      const totalCapacidade = ponData.reduce((acc, p) => acc + p.capacidade_total, 0);
+      const totalVagas = ponData.reduce((acc, p) => acc + p.vagas_disponiveis, 0);
+      const taxaGlobal = totalCapacidade > 0 ? ((totalClientes / totalCapacidade) * 100).toFixed(1) : 0;
+      
+      const lotadas = ponData.filter(p => p.status_tipo === 'danger').length;
+      const quaseCheias = ponData.filter(p => p.status_tipo === 'warning').length;
+      const livres = ponData.filter(p => p.status_tipo === 'free').length;
+
+      document.getElementById('kpiAdminClientes').textContent = totalClientes.toLocaleString('pt-BR');
+      document.getElementById('kpiAdminCapacidade').textContent = totalCapacidade.toLocaleString('pt-BR');
+      document.getElementById('kpiAdminVagas').textContent = totalVagas.toLocaleString('pt-BR');
+      document.getElementById('kpiAdminOcupacao').textContent = `${taxaGlobal}%`;
+      document.getElementById('kpiAdminProgressBar').style.width = `${Math.min(taxaGlobal, 100)}%`;
+      
+      document.getElementById('kpiAdminLotadas').textContent = lotadas;
+      document.getElementById('kpiAdminQuaseCheias').textContent = quaseCheias;
+      document.getElementById('kpiAdminTotalPons').textContent = ponData.length;
+
+      document.getElementById('count-all').textContent = ponData.length;
+      document.getElementById('count-lotadas').textContent = lotadas;
+      document.getElementById('count-quase-cheias').textContent = quaseCheias;
+      document.getElementById('count-livres').textContent = livres;
+
+      renderAdminChassis();
+      renderCharts();
+      applyFilters();
+    }
+
+    function renderAdminChassis() {
+      const container = document.getElementById('adminChassisContainer');
+      container.innerHTML = '';
+
+      const placasMap = {};
+      ponData.forEach(p => {
+        if (!placasMap[p.placa]) placasMap[p.placa] = [];
+        placasMap[p.placa].push(p);
+      });
+
+      const placasKeys = Object.keys(placasMap).map(Number).sort((a,b) => a - b);
+
+      placasKeys.forEach(placaNum => {
+        const pons = placasMap[placaNum].sort((a,b) => a.pon - b.pon);
+        const cliPlaca = pons.reduce((acc, p) => acc + p.clientes_atuais, 0);
+        const capPlaca = pons.reduce((acc, p) => acc + p.capacidade_total, 0);
+        const percPlaca = capPlaca > 0 ? ((cliPlaca / capPlaca) * 100).toFixed(0) : 0;
+
+        const card = document.createElement('div');
+        card.className = "nl-card p-3.5 space-y-3 flex flex-col justify-between";
+
+        let headerHtml = `
+          <div class="flex items-center justify-between border-b border-[var(--card-border)] pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-sm bg-[var(--primary-color)]"></span>
+              <span class="font-bold text-xs text-[var(--sector-title-color)]">Slot ${String(placaNum).padStart(2, '0')}</span>
+              <span class="text-[10px] px-1.5 py-0.2 rounded bg-[var(--card-border)] text-[var(--text-muted)] font-mono">${pons.length} PONs</span>
+            </div>
+            <span class="text-xs font-semibold ${percPlaca >= 90 ? 'text-[var(--warning)]' : 'text-[var(--primary-color)]'} font-mono">${percPlaca}%</span>
+          </div>
+        `;
+
+        let portsGridHtml = `<div class="grid grid-cols-4 gap-1.5 py-1">`;
+        pons.forEach(p => {
+          let ledClass = 'led-online';
+          let borderClass = 'border-[var(--card-border)] hover:border-[var(--success)]';
+          
+          if (p.status_tipo === 'danger') {
+            ledClass = 'led-danger';
+            borderClass = 'border-[var(--danger)]/50 bg-[var(--danger)]/10 hover:border-[var(--danger)]';
+          } else if (p.status_tipo === 'warning') {
+            ledClass = 'led-warning';
+            borderClass = 'border-[var(--warning)]/50 bg-[var(--warning)]/10 hover:border-[var(--warning)]';
+          }
+
+          portsGridHtml += `
+            <button 
+              onclick="openPonModal('${p.placa_pon}')" 
+              class="relative p-1.5 rounded-lg bg-[var(--card-bg)] border ${borderClass} flex flex-col items-center justify-center transition group text-center cursor-pointer hover:scale-105"
+              title="PON ${p.placa_pon} | ${p.clientes_atuais}/${p.capacidade_total} (${p.vagas_disponiveis} livres)"
+            >
+              <div class="flex items-center justify-between w-full px-0.5 mb-1">
+                <span class="text-[10px] font-mono font-semibold text-[var(--text-muted)] group-hover:text-[var(--text-main)]">P${p.pon}</span>
+                <span class="w-2 h-2 rounded-full ${ledClass}"></span>
+              </div>
+              <span class="text-[9px] font-mono text-[var(--text-muted)] group-hover:text-[var(--primary-color)] font-medium transition">${p.clientes_atuais}</span>
+            </button>
+          `;
+        });
+        portsGridHtml += `</div>`;
+
+        let footerHtml = `
+          <div class="flex items-center justify-between text-[10px] text-[var(--text-muted)] pt-2 border-t border-[var(--card-border)] font-mono">
+            <span>${cliPlaca}/${capPlaca} ONUs</span>
+            <button onclick="filterByPlacaQuick(${placaNum})" class="text-[var(--primary-color)] hover:underline transition font-semibold">Ver tabela →</button>
+          </div>
+        `;
+
+        card.innerHTML = headerHtml + portsGridHtml + footerHtml;
+        container.appendChild(card);
+      });
+    }
+
+    // Renderiza gráficos com Chart.js
+    function renderCharts() {
+      const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
+      const textColor = isDark ? '#94a3b8' : '#475569';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+
+      const statusCounts = {
+        free: ponData.filter(p => p.status_tipo === 'free').length,
+        warning: ponData.filter(p => p.status_tipo === 'warning').length,
+        danger: ponData.filter(p => p.status_tipo === 'danger').length
+      };
+
+      const ctxStatus = document.getElementById('statusChart').getContext('2d');
+      if (statusChartInstance) statusChartInstance.destroy();
+
+      statusChartInstance = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: ['🟢 Livres', '🟡 Quase Cheias', '🔴 Lotadas'],
+          datasets: [{
+            data: [statusCounts.free, statusCounts.warning, statusCounts.danger],
+            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+            borderColor: isDark ? '#0c1e3e' : '#ffffff',
+            borderWidth: 3,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          cutout: '72%'
+        }
+      });
+
+      document.getElementById('statusChartLegend').innerHTML = `
+        <div class="p-1.5 rounded-lg bg-[rgba(16,185,129,0.1)] border border-[rgba(16,185,129,0.25)]">
+          <span class="text-[var(--success)] font-bold text-sm">${statusCounts.free}</span>
+          <p class="text-[10px] text-[var(--text-muted)]">Livres</p>
+        </div>
+        <div class="p-1.5 rounded-lg bg-[rgba(245,158,11,0.1)] border border-[rgba(245,158,11,0.25)]">
+          <span class="text-[var(--warning)] font-bold text-sm">${statusCounts.warning}</span>
+          <p class="text-[10px] text-[var(--text-muted)]">Quase cheias</p>
+        </div>
+        <div class="p-1.5 rounded-lg bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.25)]">
+          <span class="text-[var(--danger)] font-bold text-sm">${statusCounts.danger}</span>
+          <p class="text-[10px] text-[var(--text-muted)]">Lotadas</p>
+        </div>
+      `;
+
+      const placasMap = {};
+      ponData.forEach(p => {
+        if (!placasMap[p.placa]) placasMap[p.placa] = { clientes: 0, vagas: 0, cap: 0 };
+        placasMap[p.placa].clientes += p.clientes_atuais;
+        placasMap[p.placa].vagas += p.vagas_disponiveis;
+        placasMap[p.placa].cap += p.capacidade_total;
+      });
+
+      const placaLabels = Object.keys(placasMap).map(p => `Placa ${p}`);
+      const clientesData = Object.values(placasMap).map(d => d.clientes);
+      const vagasData = Object.values(placasMap).map(d => d.vagas);
+
+      const ctxPlacas = document.getElementById('placasChart').getContext('2d');
+      if (placasChartInstance) placasChartInstance.destroy();
+
+      placasChartInstance = new Chart(ctxPlacas, {
+        type: 'bar',
+        data: {
+          labels: placaLabels,
+          datasets: [
+            {
+              label: 'Clientes Ativos',
+              data: clientesData,
+              backgroundColor: '#48cae4',
+              borderRadius: 6
+            },
+            {
+              label: 'Vagas Livres',
+              data: vagasData,
+              backgroundColor: '#10b981',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              stacked: true,
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { size: 11 } }
+            },
+            y: {
+              stacked: true,
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { size: 11 } }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { color: textColor, font: { size: 11 }, boxWidth: 12 }
+            }
+          }
+        }
+      });
+    }
+
+    // Filtros e ordenação da tabela
+    function applyFilters() {
+      const placaFilter = document.getElementById('filterPlaca').value;
+      const statusFilter = document.getElementById('filterStatus').value;
+      const searchInput = document.getElementById('tableSearchInput').value.toLowerCase().trim();
+
+      filteredData = ponData.filter(item => {
+        if (placaFilter !== 'all' && String(item.placa) !== placaFilter) return false;
+        if (statusFilter !== 'all' && item.status_tipo !== statusFilter) return false;
+
+        if (selectedQuickFilter === 'lotadas' && item.status_tipo !== 'danger') return false;
+        if (selectedQuickFilter === 'quase-cheias' && item.status_tipo !== 'warning') return false;
+        if (selectedQuickFilter === 'livres' && item.status_tipo !== 'free') return false;
+        if (selectedQuickFilter === 'top-vagas' && item.vagas_disponiveis <= 50) return false;
+
+        if (searchInput) {
+          const matchPon = item.placa_pon.toLowerCase().includes(searchInput);
+          const matchCto = item.ctos.some(c => c.toLowerCase().includes(searchInput));
+          if (!matchPon && !matchCto) return false;
+        }
+
+        return true;
+      });
+
+      sortData();
+      renderTable();
+    }
+
+    function sortTable(column) {
+      if (currentSort.column === column) {
+        currentSort.asc = !currentSort.asc;
+      } else {
+        currentSort.column = column;
+        currentSort.asc = true;
+      }
+      sortData();
+      renderTable();
+    }
+
+    function sortData() {
+      filteredData.sort((a, b) => {
+        let valA = a[currentSort.column];
+        let valB = b[currentSort.column];
+
+        if (currentSort.column === 'placa_pon') {
+          if (a.placa !== b.placa) return currentSort.asc ? a.placa - b.placa : b.placa - a.placa;
+          return currentSort.asc ? a.pon - b.pon : b.pon - a.pon;
+        }
+
+        if (typeof valA === 'string') {
+          return currentSort.asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+        return currentSort.asc ? valA - valB : valB - valA;
+      });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('ponTableBody');
+      tbody.innerHTML = '';
+
+      document.getElementById('visibleRowCount').textContent = filteredData.length;
+      document.getElementById('totalRowCount').textContent = ponData.length;
+
+      if (filteredData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-8 text-[var(--text-muted)] text-xs">
+              Nenhuma porta PON encontrada para os filtros selecionados.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filteredData.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-[rgba(72,202,228,0.06)] transition border-b border-[var(--card-border)]";
+
+        let badgeHtml = '';
+        let rowIndicator = '';
+        if (item.status_tipo === 'danger') {
+          badgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[rgba(239,68,68,0.15)] text-[var(--danger)] border border-[rgba(239,68,68,0.3)]"><span class="w-1.5 h-1.5 rounded-full bg-[var(--danger)] led-danger"></span> Lotada</span>`;
+          rowIndicator = 'border-l-2 border-[var(--danger)]';
+        } else if (item.status_tipo === 'warning') {
+          badgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[rgba(245,158,11,0.15)] text-[var(--warning)] border border-[rgba(245,158,11,0.3)]"><span class="w-1.5 h-1.5 rounded-full bg-[var(--warning)] led-warning"></span> Quase Cheia</span>`;
+          rowIndicator = 'border-l-2 border-[var(--warning)]';
+        } else {
+          badgeHtml = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[rgba(16,185,129,0.15)] text-[var(--success)] border border-[rgba(16,185,129,0.3)]"><span class="w-1.5 h-1.5 rounded-full bg-[var(--success)]"></span> Livre</span>`;
+        }
+
+        let barColor = 'bg-[var(--success)]';
+        if (item.taxa_ocupacao >= 98) barColor = 'bg-[var(--danger)]';
+        else if (item.taxa_ocupacao >= 90) barColor = 'bg-[var(--warning)]';
+
+        const ctosVisible = item.ctos.slice(0, 3);
+        const ctosRemaining = item.ctos.length - ctosVisible.length;
+
+        let ctosChipsHtml = ctosVisible.map(c => `
+          <span class="nl-tag text-[10px] font-mono truncate max-w-[130px]" title="${c}">
+            ${c}
+          </span>
+        `).join('');
+
+        if (ctosRemaining > 0) {
+          ctosChipsHtml += `
+            <button onclick="openPonModal('${item.placa_pon}')" class="px-1.5 py-0.5 bg-[rgba(72,202,228,0.15)] hover:bg-[rgba(72,202,228,0.25)] text-[var(--primary-color)] border border-[rgba(72,202,228,0.3)] rounded text-[10px] font-semibold transition">
+              +${ctosRemaining}
+            </button>
+          `;
+        }
+
+        tr.innerHTML = `
+          <td class="py-3 px-3.5 font-bold text-[var(--text-main)] ${rowIndicator}">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-[var(--card-bg)] text-[var(--primary-color)] font-mono text-xs border border-[var(--card-border)]">${item.placa_pon}</span>
+              <span class="text-[11px] text-[var(--text-muted)] font-sans font-normal hidden sm:inline">Placa ${item.placa}</span>
+            </div>
+          </td>
+          <td class="py-3 px-3 text-center font-bold text-[var(--text-main)]">
+            ${item.clientes_atuais}
+          </td>
+          <td class="py-3 px-3 text-center text-[var(--text-muted)]">
+            ${item.capacidade_total}
+          </td>
+          <td class="py-3 px-3 text-center font-bold ${item.vagas_disponiveis <= 5 ? 'text-[var(--danger)]' : 'text-[var(--success)]'}">
+            ${item.vagas_disponiveis}
+          </td>
+          <td class="py-3 px-4">
+            <div class="space-y-1">
+              <div class="flex justify-between text-[11px]">
+                <span class="font-bold text-[var(--text-main)]">${item.taxa_ocupacao}%</span>
+              </div>
+              <div class="w-full bg-[var(--card-border)] h-1.5 rounded-full overflow-hidden">
+                <div class="${barColor} h-full rounded-full transition-all" style="width: ${Math.min(item.taxa_ocupacao, 100)}%"></div>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-3 text-center">
+            ${badgeHtml}
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex flex-wrap items-center gap-1 max-w-sm">
+              ${ctosChipsHtml}
+            </div>
+          </td>
+          <td class="py-3 px-3 text-right">
+            <button onclick="openPonModal('${item.placa_pon}')" class="nl-btn-icon w-7 h-7 inline-flex" title="Ver CTOs e Detalhes">
+              <i data-lucide="eye" class="w-3.5 h-3.5 text-[var(--primary-color)]"></i>
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      lucide.createIcons();
+    }
+
+    function filterByPlacaQuick(placaNum) {
+      if (!isAdminLoggedIn) {
+        openRouteAllCtos(placaNum);
+        return;
+      }
+      switchView('admin');
+      document.getElementById('filterPlaca').value = String(placaNum);
+      selectedQuickFilter = 'all';
+      updateQuickFilterStyles();
+      applyFilters();
+      document.querySelector('table').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function setQuickFilter(type) {
+      selectedQuickFilter = type;
+      updateQuickFilterStyles();
+      applyFilters();
+    }
+
+    function updateQuickFilterStyles() {
+      const filters = ['all', 'lotadas', 'quase-cheias', 'livres', 'top-vagas'];
+      filters.forEach(f => {
+        const btn = document.getElementById(`qf-${f}`);
+        if (!btn) return;
+        if (f === selectedQuickFilter) btn.classList.add('nl-tab-active');
+        else btn.classList.remove('nl-tab-active');
+      });
+    }
+
+    // Modal de Detalhes da PON
+    let currentModalPon = null;
+
+    function openPonModal(placaPon) {
+      const item = ponData.find(p => p.placa_pon === placaPon);
+      if (!item) return;
+
+      currentModalPon = item;
+
+      document.getElementById('modalTitle').textContent = `Porta PON ${item.placa_pon} (Slot ${item.placa}, Porta ${item.pon})`;
+      document.getElementById('modalSubtitle').textContent = `Capacidade: ${item.clientes_atuais} de ${item.capacidade_total} portas em uso`;
+      
+      document.getElementById('modalClientes').textContent = item.clientes_atuais;
+      document.getElementById('modalCapacidade').textContent = item.capacidade_total;
+      document.getElementById('modalVagas').textContent = item.vagas_disponiveis;
+      document.getElementById('modalOcupacao').textContent = `${item.taxa_ocupacao}%`;
+      document.getElementById('modalCtosCount').textContent = item.ctos.length;
+
+      const badgeBox = document.getElementById('modalStatusBadge');
+      const progressBar = document.getElementById('modalProgressBar');
+      const engBox = document.getElementById('modalEngineeringBox');
+
+      if (item.status_tipo === 'danger') {
+        badgeBox.innerHTML = `<span class="text-[var(--danger)] font-bold">🔴 100% LOTADA (Sem Vagas)</span>`;
+        progressBar.className = "h-full rounded-full bg-[var(--danger)]";
+        progressBar.style.width = "100%";
+
+        engBox.className = "p-3.5 rounded-xl border border-[var(--danger)]/40 bg-[rgba(239,68,68,0.12)] text-xs text-[var(--danger)] space-y-1";
+        engBox.innerHTML = `
+          <strong class="font-bold flex items-center gap-1.5 text-[var(--danger)]">
+            <i data-lucide="alert-octagon" class="w-4 h-4"></i> Alerta Crítico de Engenharia
+          </strong>
+          <p>Esta rota atingiu a capacidade máxima (128/128). Novas instalações devem ser suspensas ou redirecionadas para expansão óptica.</p>
+        `;
+      } else if (item.status_tipo === 'warning') {
+        badgeBox.innerHTML = `<span class="text-[var(--warning)] font-bold">🟡 QUASE CHEIA (${item.vagas_disponiveis} vagas restantes)</span>`;
+        progressBar.className = "h-full rounded-full bg-[var(--warning)]";
+        progressBar.style.width = `${item.taxa_ocupacao}%`;
+
+        engBox.className = "p-3.5 rounded-xl border border-[var(--warning)]/40 bg-[rgba(245,158,11,0.12)] text-xs text-[var(--warning)] space-y-1";
+        engBox.innerHTML = `
+          <strong class="font-bold flex items-center gap-1.5 text-[var(--warning)]">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i> Atenção para Expansão
+          </strong>
+          <p>Restam apenas <strong>${item.vagas_disponiveis} vaga(s)</strong> para instalação nesta rota. Planejar remanejamento antes do esgotamento.</p>
+        `;
+      } else {
+        badgeBox.innerHTML = `<span class="text-[var(--success)] font-bold">🟢 LIVRE (${item.vagas_disponiveis} vagas livres)</span>`;
+        progressBar.className = "h-full rounded-full bg-[var(--success)]";
+        progressBar.style.width = `${item.taxa_ocupacao}%`;
+
+        engBox.className = "p-3.5 rounded-xl border border-[var(--success)]/40 bg-[rgba(16,185,129,0.12)] text-xs text-[var(--success)] space-y-1";
+        engBox.innerHTML = `
+          <strong class="font-bold flex items-center gap-1.5 text-[var(--success)]">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Viabilidade Técnica Aprovada
+          </strong>
+          <p>Rota operando normalmente com <strong>${item.vagas_disponiveis} vagas disponíveis</strong> para novas assinaturas imediatas.</p>
+        `;
+      }
+
+      const ctosContainer = document.getElementById('modalCtosList');
+      ctosContainer.innerHTML = '';
+      if (item.ctos.length === 0) {
+        ctosContainer.innerHTML = `<span class="text-xs text-[var(--text-muted)]">Nenhuma CTO vinculada formalmente.</span>`;
+      } else {
+        item.ctos.forEach(c => {
+          const pill = document.createElement('span');
+          pill.className = "nl-tag text-xs font-mono";
+          pill.innerHTML = `
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--primary-color)]"></span>
+            <span>${c}</span>
+          `;
+          ctosContainer.appendChild(pill);
+        });
+      }
+
+      document.getElementById('ponModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('ponModal').classList.add('hidden');
+      currentModalPon = null;
+    }
+
+    function copyModalCtos() {
+      if (!currentModalPon) return;
+      const text = currentModalPon.ctos.join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Lista de CTOs copiada com sucesso!", "check");
+      });
+    }
+
+    // Alternador de tema
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+      renderCharts();
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('nl_theme', theme);
+
+      const icon = document.getElementById('themeIcon');
+      if (icon) {
+        icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+        lucide.createIcons();
+      }
+    }
+
+    // Sincronização direta com a planilha do Google Sheets
+    async function syncGoogleSheets(silent = false) {
+      const icon = document.getElementById('syncIcon');
+      const text = document.getElementById('syncText');
+
+      if (!silent && icon && text) {
+        icon.classList.add('animate-spin');
+        text.textContent = 'Sincronizando...';
+      }
+
+      const csvUrl = 'https://docs.google.com/spreadsheets/d/1rWwViGvELZf6ZM5rnKngxbs0am7JFF-YJTj-9J2UvXg/export?format=csv&gid=373241118';
+
+      try {
+        const response = await fetch(csvUrl, { cache: 'no-cache' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const csvText = await response.text();
+        const parsedPons = parseGoogleSheetCsv(csvText);
+
+        if (parsedPons && parsedPons.length > 0) {
+          ponData = parsedPons.map(calcRowMetrics);
+          updateViabilityDashboard();
+          updateAdminDashboard();
+
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          document.getElementById('headerLastSync').textContent = `Sincronizado: ${timeStr}`;
+          
+          if (!silent) {
+            showToast(`Sincronizado com sucesso! ${parsedPons.length} portas atualizadas.`, "check");
+          }
+        }
+      } catch (err) {
+        console.warn("Sincronização remota:", err);
+        if (!silent) {
+          showToast("Aviso: Dados locais mantidos.", "alert-triangle");
+        }
+      } finally {
+        if (!silent && icon && text) {
+          icon.classList.remove('animate-spin');
+          text.textContent = 'Sincronizar';
+        }
+      }
+    }
+
+    function parseGoogleSheetCsv(text) {
+      const lines = text.split(/\r?\n/);
+      const results = [];
+      let headerFound = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        if (line.includes('placa_pon') && line.includes('clientes_atuais')) {
+          headerFound = true;
+          continue;
+        }
+
+        if (!headerFound) continue;
+
+        const cols = parseCsvLine(line);
+        if (cols.length >= 5 && cols[0] && cols[0].includes('-')) {
+          const placaPon = cols[0].trim();
+          const parts = placaPon.split('-');
+          const placa = parseInt(parts[0], 10);
+          const pon = parseInt(parts[1], 10);
+          
+          const clientes = parseInt(cols[1], 10) || 0;
+          const capacidade = parseInt(cols[2], 10) || 128;
+          const vagas = parseInt(cols[3], 10) || (capacidade - clientes);
+          const statusRaw = cols[4] ? cols[4].trim() : '';
+
+          let ctos = [];
+          if (cols[5]) {
+            ctos = cols[5].split(',').map(c => c.trim()).filter(Boolean);
+          }
+
+          results.push({
+            placa_pon: placaPon,
+            placa: placa,
+            pon: pon,
+            clientes_atuais: clientes,
+            capacidade_total: capacidade,
+            vagas_disponiveis: vagas,
+            status: statusRaw,
+            ctos: ctos
+          });
+        }
+      }
+      return results;
+    }
+
+    function parseCsvLine(line) {
+      const result = [];
+      let insideQuote = false;
+      let entry = '';
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          insideQuote = !insideQuote;
+        } else if (char === ',' && !insideQuote) {
+          result.push(entry);
+          entry = '';
+        } else {
+          entry += char;
+        }
+      }
+      result.push(entry);
+      return result;
+    }
+
+    function exportToCSV() {
+      const rows = [
+        ["Placa-PON", "Placa", "PON", "Clientes Atuais", "Capacidade Total", "Vagas Disponiveis", "Taxa Ocupacao (%)", "Status", "CTOs Atendidas"]
+      ];
+
+      filteredData.forEach(p => {
+        rows.push([
+          p.placa_pon,
+          p.placa,
+          p.pon,
+          p.clientes_atuais,
+          p.capacidade_total,
+          p.vagas_disponiveis,
+          `${p.taxa_ocupacao}%`,
+          p.status,
+          `"${p.ctos.join('; ')}"`
+        ]);
+      });
+
+      const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + rows.map(e => e.join(",")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `controle_pon_cto_newlife_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Relatório CSV exportado com sucesso!", "check");
+    }
+
+    function showToast(message, icon = "check") {
+      const toast = document.getElementById('toast');
+      const msg = document.getElementById('toastMsg');
+      const iconEl = document.getElementById('toastIcon');
+
+      msg.textContent = message;
+      iconEl.setAttribute('data-lucide', icon);
+      lucide.createIcons();
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
